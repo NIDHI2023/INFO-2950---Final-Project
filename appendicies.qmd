@@ -1,0 +1,10 @@
+---
+title: "Project title"
+subtitle: "Appendix to report"
+execute:
+  echo: true
+---
+
+# Data cleaning
+
+# Other appendicies (as necessary)

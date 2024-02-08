@@ -1,0 +1,25 @@
+---
+title: "Project title"
+subtitle: "Report"
+---
+
+# Introduction
+
+
+# Data description
+
+
+# Data analysis
+
+
+# Evaluation of significance
+
+
+# Interpretation and conclusions
+
+
+# Limitations
+
+
+# Acknowledgments
+

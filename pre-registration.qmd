@@ -1,0 +1,16 @@
+---
+title: "Project title"
+subtitle: "Preregistration of analyses"
+---
+
+# Hypothesis 1
+
+**Replace with your hypothesis.**
+
+Analysis: Replace with your analysis plan.
+
+# Hypothesis 2
+
+**Replace with your hypothesis.**
+
+Analysis: Replace with your analysis plan.

@@ -1,0 +1,88 @@
+name: Proposal review (mentor)
+description: Use this template for the project mentor to provide feedback on the project proposal.
+title: Mentor proposal review
+body:
+  - type: markdown
+    attributes:
+      value: "# Dataset 1"
+  - type: textarea
+    id: goal-1
+    attributes:
+      label: Goals
+      description: Describe the goal of the project.
+  - type: textarea
+    id: unclear-1
+    attributes:
+      label: Unclear elements
+      description: Is there anything that is unclear from the proposal?
+  - type: textarea
+    id: feasible-1
+    attributes:
+      label: Feasibility
+      description: How feasible will it be for the team to complete this project by the end of the semester?
+  - type: textarea
+    id: feedback-1
+    attributes:
+      label: Feedback
+      description: Provide constructive feedback on how the team might be able to improve their project.
+  - type: textarea
+    id: highlight-1
+    attributes:
+      label: Interesting aspects
+      description: What aspect of this project you are most interested in and would like to see highlighted in the final report?
+  - type: markdown
+    attributes:
+      value: "# Dataset 2"
+  - type: textarea
+    id: goal-2
+    attributes:
+      label: Goals
+      description: Describe the goal of the project.
+  - type: textarea
+    id: unclear-2
+    attributes:
+      label: Unclear elements
+      description: Is there anything that is unclear from the proposal?
+  - type: textarea
+    id: feasible-2
+    attributes:
+      label: Feasibility
+      description: How feasible will it be for the team to complete this project by the end of the semester?
+  - type: textarea
+    id: feedback-2
+    attributes:
+      label: Feedback
+      description: Provide constructive feedback on how the team might be able to improve their project.
+  - type: textarea
+    id: highlight-2
+    attributes:
+      label: Interesting aspects
+      description: What aspect of this project you are most interested in and would like to see highlighted in the final report?
+  - type: markdown
+    attributes:
+      value: "# Dataset 3"
+  - type: textarea
+    id: goal-3
+    attributes:
+      label: Goals
+      description: Describe the goal of the project.
+  - type: textarea
+    id: unclear-3
+    attributes:
+      label: Unclear elements
+      description: Is there anything that is unclear from the proposal?
+  - type: textarea
+    id: feasible-3
+    attributes:
+      label: Feasibility
+      description: How feasible will it be for the team to complete this project by the end of the semester?
+  - type: textarea
+    id: feedback-3
+    attributes:
+      label: Feedback
+      description: Provide constructive feedback on how the team might be able to improve their project.
+  - type: textarea
+    id: highlight-3
+    attributes:
+      label: Interesting aspects
+      description: What aspect of this project you are most interested in and would like to see highlighted in the final report?
