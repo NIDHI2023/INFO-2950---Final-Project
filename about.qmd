@@ -2,7 +2,10 @@
 title: "About"
 ---
 
-This project was developed by [Hello] For [INFO 2950: Introduction to Data Science](https://info2950.infosci.cornell.edu) at Cornell University. The team is comprised of the following team members.
+<<<<<<< HEAD
+
+This project was developed by **\[Brilliant Penguins]** For [INFO 2950: Introduction to Data Science](https://info2950.infosci.cornell.edu) at Cornell University. The team is comprised of the following team members.
+>>>>>>> 3e35e59d1da8058700f0e6265739c186f8709fa1
 
 -   Team member 1: One sentence description of Team member 1 (e.g., year, major, etc.).
 -   Team member 2: One sentence description of Team member 2 (e.g., year, major, etc.).
