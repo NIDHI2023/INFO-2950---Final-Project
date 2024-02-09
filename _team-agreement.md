@@ -6,7 +6,7 @@ Working together as a team is critical for your success on this project. Conflic
 
 ## Team name
 
-TODO
+Brilliant Penguins
 
 ## To what goals do we all commit?
 
