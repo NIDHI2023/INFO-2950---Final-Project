@@ -6,37 +6,40 @@ Working together as a team is critical for your success on this project. Conflic
 
 ## Team name
 
-Brilliant Penguins
+Brilliant Cassowary
 
 ## To what goals do we all commit?
 
-TODO: discuss and document here
+-Finish the project on time
+-Have a high-quality project
 
 ## Weekly meetings
 
-TODO: discuss and document here
+Friday 3:30-4:30 (if we need to stay longer we can)
 
 ## Meeting "location"
 
-TODO: discuss and document here
+Olin Library
 
 ## Primary method of communication
 
-TODO: discuss and document here
+Discord
+(use groupchat if more urgent, such as deadline by the end of the day or if someone doesn't respond after a day)
 
 ## How should someone notify the others if they cannot attend a lab or scheduled team meeting?
 
-TODO: discuss and document here
+Discord, should notify at latest an hour before the meeting
 
 ## By when should everyone have their portion of the lab completed?
 
-TODO: discuss and document here
+One day before the due date, so we have a day for any fixes or additions
 
 ## How will we hold ourselves and one another accountable?
 
 What (exactly) will we say to a team member who appears not to be contributing equally? To a team member who fails to deliver what was promised?
 
-TODO: discuss and document here
+Reminders of what the team member promised to do
+Check in the groupchat for updates on progress
 
 ## What else do we want to include in this agreement?
 
@@ -44,7 +47,7 @@ Maybe your team needs a *fun* clause...
 
 **Tip:** Not everything in life is about work. Sometimes it is important to celebrate too. Consider grabbing a coffee or ice cream at the completion of your project to celebrate!
 
-TODO: discuss and document here
+Dairy bar ice cream day once we're done!!
 
 ## Using your agreement
 
