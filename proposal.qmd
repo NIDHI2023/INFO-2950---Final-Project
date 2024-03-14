@@ -131,7 +131,9 @@ Variables:
 ```{r}
 #| label: load-data-2
 
-# add code here
+read_csv("data/Speed Dating Data.csv")|>
+skim()
+
 ```
 
 # Data 3
