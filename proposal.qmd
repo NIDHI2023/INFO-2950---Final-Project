@@ -161,29 +161,60 @@ Variables:
     Categorical?
     Quantitative?
 
-    Main Question: What are the most popular platforms for streaming movies and TV shows, as indicated by IMDb ratings and viewer preferences?
+1. Research Question: How does film and genre views and popularity differ across different video platforms? How does trends in film popularity across different platforms correlate with differing demographic characteristics of platform users?
 
-This study aims to investigate the most popular platforms for streaming movies and TV shows, as indicated by IMDb ratings and viewer preferences.
-The focus is on understanding which platforms are preferred by viewers for different types of content and how these preferences are reflected in the ratings.
+This study aims to investigate the trends of film ratings/genre popularity, and the number of views across different streaming platforms, as indicated by IMDb ratings and viewer preferences.
+
+The focus is on understanding which platforms are preferred by viewers for different types of content and how these preferences are reflected in content ratings.
 
   
  - Hypothesis 1: Netflix is the most popular streaming platform among IMDb users, as indicated by the highest average ratings for its exclusive content.
 
- - Hypothesis 2: The popularity of streaming platforms varies by genre, with certain platforms being preferred for specific types of content.
+ - Hypothesis 2: The popularity of streaming platforms varies by genre, with certain platforms being preferred for specific types of content. Different audience groups that a platform is tailored to also influence media popularity rankings within a platform.
      
 
 
 Variables:
 
       
- - Categorical: Title type (e.g., movie, TV series), streaming platform, genre 
- - Quantitative: Average rating, number of votes
+ - Categorical: Title, isAdult (whether it is an adult film), genre
+ - Quantitative: Average rating, number of votes, movie runtime, start and end year
+ 
+2. Research Question: How does movie ratings across different platforms change over time?
 
+- This study will investigate the trends of movie views across different streaming patterns over time, the processes through which different movies gain or lose popularity, and how patterns of trending content differ across different platforms
+
+Hypothesis: Trends of movie popularity will be approximately comparable across different video platforms through time.
+
+ - Categorical: Title, isAdult (whether it is an adult film), genre
+ - Quantitative: Average rating, number of votes, movie runtime, start and end year
+ 
 
 ## Glimpse of data
 
 ```{r}
 #| label: load-data-3
+#imdb_basics <- read_tsv("data/title.basics.tsv.tsv")
+#imdb_ratings <- read_tsv("data/title.ratings.tsv.tsv")
+#imdb_data <- inner_join(
+#  x = imdb_basics, y = imdb_ratings,
+#)
+#glimpse(imdb_data)
 
-# add code here
+#Note: we had trouble uploading the imdb_data dataset due to an error: file size is 869.3 MB which exceed github file limit of 300 MB. We will consult with the Professor for what to do, but this is a preview of the dataset below:
+
+#1,412,614
+#Columns: 11
+#$ tconst         <chr> "tt0000001", "tt0000002", "tt000…
+#$ titleType      <chr> "short", "short", "short", "shor…
+#$ primaryTitle   <chr> "Carmencita", "Le clown et ses c…
+#$ originalTitle  <chr> "Carmencita", "Le clown et ses c…
+#$ isAdult        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+#$ startYear      <chr> "1894", "1892", "1892", "1892", …
+#$ endYear        <chr> "\\N", "\\N", "\\N", "\\N", "\\N…
+#$ runtimeMinutes <chr> "1", "5", "4", "12", "1", "1", "…
+#$ genres         <chr> "Documentary,Short", "Animation,…
+#$ averageRating  <dbl> 5.7, 5.7, 6.5, 5.4, 6.2, 5.0, 5.…
+#$ numVotes       <dbl> 2032, 272, 1977, 178, 2735, 183,…
+
 ```
