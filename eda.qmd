@@ -6,6 +6,7 @@ execute:
 ---
 
 ```{r}
+library(tidyverse)
 library(janitor)
 library(dplyr)
 library(skimr)
@@ -24,7 +25,55 @@ Research question(s). State your research question (s) clearly.
 
 Have an initial draft of your data cleaning appendix. Document every step that takes your raw data file(s) and turns it into the analysis-ready data set that you would submit with your final project. Include text narrative describing your data collection (downloading, scraping, surveys, etc) and any additional data curation/cleaning (merging data frames, filtering, transformations of variables, etc). Include code for data curation/cleaning, but not collection.
 
+1. Renaming variables
 
+```{r}
+
+#remove NA columns
+coffee_clean <- coffee_df |>
+  select(-contains("flavorings")) |>
+  select(-contains("Gender (please specify"))
+
+#new names
+#coffee_clean <- coffee_df |>
+#  rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
+
+
+#remove repetitive questions
+coffee_clean <- coffee_clean |>
+  mutate(`Where do you typically drink coffee?` = NULL) |>
+  mutate(`How do you brew coffee at home?` = NULL)|>
+  mutate(`On the go, where do you typically purchase coffee?` = NULL) |>
+  mutate(`Do you usually add anything to your coffee?` = NULL) |>
+  mutate(`What kind of diary do you add?` = NULL) |>
+  mutate(`What kind of sugar or sweetener do you add?` = NULL) |>
+  mutate(`Why do you drink coffee?` = NULL)
+
+
+#function to simplify question names
+q_simplify <- function(df, col) {
+  df |>
+    select(contains("Where do you typically drink")) |>
+    rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
+}
+
+
+#If column is a question true false, keep first word and parentheses content
+
+#if_else("(|)|What|Where|where|How|flavor|?",
+#        true,
+#        false)
+# for example, for column "where do you typically drink coffee (at home)" --> "where_at_home" ;)
+
+#rename_with(insert our function, .cols = everything())
+
+
+# coffee_clean <- coffee_clean |>
+#   select(contains("Where do you typically drink")) |>
+#   rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
+#   
+
+```
 
 # Data description
 
