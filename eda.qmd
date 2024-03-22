@@ -5,6 +5,17 @@ execute:
   echo: true
 ---
 
+```{r}
+library(janitor)
+library(dplyr)
+library(skimr)
+```
+
+# Inserting the dataset on Coffee
+```{r}
+coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
+```
+
 # Research question(s)
 
 Research question(s). State your research question (s) clearly.
@@ -12,6 +23,8 @@ Research question(s). State your research question (s) clearly.
 # Data collection and cleaning
 
 Have an initial draft of your data cleaning appendix. Document every step that takes your raw data file(s) and turns it into the analysis-ready data set that you would submit with your final project. Include text narrative describing your data collection (downloading, scraping, surveys, etc) and any additional data curation/cleaning (merging data frames, filtering, transformations of variables, etc). Include code for data curation/cleaning, but not collection.
+
+
 
 # Data description
 
