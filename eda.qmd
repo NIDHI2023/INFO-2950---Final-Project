@@ -82,7 +82,7 @@ coffee_clean <- coffee_clean |>
     prefer_between_ad = "between_coffee_a_and_coffee_d,_which_did_you_prefer?", 
     favorite_overall_coffee = "lastly,_what_was_your_favorite_overall_coffee?", 
     time_spent_on_equipment = "approximately_how_much_have_you_spent_on_coffee_equipment_in_the_past_5_years?", 
-    getting_good_value = "do_you_feel_like_you’re_getting_good_value_for_your_money_with_regards_to_your_coffee_equipment?"
+    good_value_equipment = "do_you_feel_like_you’re_getting_good_value_for_your_money_with_regards_to_your_coffee_equipment?"
   )
 
 colnames(coffee_clean) <- sapply(colnames(coffee_clean), function(name) {
@@ -105,7 +105,6 @@ colnames(coffee_clean) <- sapply(colnames(coffee_clean), function(name) {
 }
 )
 
-print(colnames(coffee_clean))
 
 #If column is a question true false, keep first word and parentheses content
 
@@ -122,6 +121,30 @@ print(colnames(coffee_clean))
 #   rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
 #   
 
+```
+
+```{r}
+#manually changing some more confusing names
+coffee_clean_2 <- coffee_clean |>
+  rename(at_home_coffee_brewing_machine = `at_home_coffee_brewing_machine_(e.g._mr._coffee)`,
+         at_home_pod_or_capsule_machine = `at_home_pod/capsule_machine_(e.g._keurig/nespresso)`,
+         at_home_coffee_extract = `at_home_coffee_extract_(e.g._cometeer)`,
+         purchase_national_chain = `purchase_national_chain_(e.g._starbucks,_dunkin)`,
+         add_to_none = `add_to_no_-_just_black`,
+         add_to_milk = `add_to_milk,_dairy_alternative,_or_coffee_creamer`,
+         sugar_sweetener_add_artificial_sweeteners = `sugar_sweetener_add_artificial_sweeteners_(e.g.,_splenda)`,
+         sugar_sweetener_add_raw_sugar= `sugar_sweetener_add_raw_sugar_(turbinado)`,
+         where_work = `do_you_work_from_home_or_in_person?`,
+         monthly_coffee_cost = `in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?`,
+         like_taste = `do_you_like_the_taste_of_coffee?`,
+         know_where_coffee_from = `do_you_know_where_your_coffee_comes_from?`,
+         most_pay = `what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?`,
+         most_willing_pay = `what_is_the_most_you'd_ever_be_willing_to_pay_for_a_cup_of_coffee?`,
+         good_value_money = `do_you_feel_like_you’re_getting_good_value_for_your_money_when_you_buy_coffee_at_a_cafe?`) |>
+  mutate(`what_kind_of_dairy_do_you_add?` = NULL)
+
+print(colnames(coffee_clean_2))
+#print(colnames(coffee_clean))
 ```
 
 # Data description
