@@ -57,6 +57,55 @@ q_simplify <- function(df, col) {
     rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
 }
 
+original_names <- colnames(coffee_clean)
+tidy_names <- gsub(" ", "_", original_names)
+tidy_names <- tolower(tidy_names)
+tidy_names <- gsub("[[:punct:]]&&[^_]", "", tidy_names)
+
+colnames(coffee_clean) <- tidy_names
+
+coffee_clean <- coffee_clean |>
+  rename(
+    age = "what_is_your_age?",
+    cups_of_coffee_per_day = "how_many_cups_of_coffee_do_you_typically_drink_per_day?",
+    how_else_at_home = "how_else_do_you_brew_coffee_at_home?",
+    where_else_purchase_coffee = "where_else_do_you_purchase_coffee?",
+    favorite_coffee_drink = "what_is_your_favorite_coffee_drink?",
+    favorite_coffee = "please_specify_what_your_favorite_coffee_drink_is", 
+    prefer_between_abc = "between_coffee_a,_coffee_b,_and_coffee_c_which_did_you_prefer?", 
+    other_flavoring = "what_other_flavoring_do_you_use?", 
+    best_described_before = "before_today's_tasting,_which_of_the_following_best_described_what_kind_of_coffee_you_like?", 
+    like_coffee = "how_strong_do_you_like_your_coffee?", 
+    roast_level = "what_roast_level_of_coffee_do_you_prefer?", 
+    caffeine = "how_much_caffeine_do_you_like_in_your_coffee?", 
+    own_coffee_expertise = "lastly,_how_would_you_rate_your_own_coffee_expertise?", 
+    prefer_between_ad = "between_coffee_a_and_coffee_d,_which_did_you_prefer?", 
+    favorite_overall_coffee = "lastly,_what_was_your_favorite_overall_coffee?", 
+    time_spent_on_equipment = "approximately_how_much_have_you_spent_on_coffee_equipment_in_the_past_5_years?", 
+    getting_good_value = "do_you_feel_like_you’re_getting_good_value_for_your_money_with_regards_to_your_coffee_equipment?"
+  )
+
+colnames(coffee_clean) <- sapply(colnames(coffee_clean), function(name) {
+  if (grepl("where_do_you_typically_drink_coffee", name)) {
+    name <- gsub("where_do_you_typically_drink_coffee\\?_\\((.*)\\)", "drink_\\1", name)
+  } else if (grepl("how_do_you_brew_coffee_at_home", name)) {
+    name <- gsub("how_do_you_brew_coffee_at_home\\?_\\((.*)\\)", "at_home_\\1", name)
+  } else if (grepl("on_the_go,_where_do_you_typically_purchase_coffee", name)) {
+    name <- gsub("on_the_go,_where_do_you_typically_purchase_coffee\\?_\\((.*)\\)", "purchase_\\1", name)
+  } else if (grepl("do_you_usually_add_anything_to_your_coffee", name)) {
+    name <- gsub("do_you_usually_add_anything_to_your_coffee\\?_\\((.*)\\)", "add_to_\\1", name)
+  } else if (grepl("what_kind_of_dairy_do_you_add", name)) {
+    name <- gsub("what_kind_of_dairy_do_you_add\\?_\\((.*)\\)", "dairy_add_\\1", name)
+  } else if (grepl("what_kind_of_sugar_or_sweetener_do_you_add", name)) {
+    name <- gsub("what_kind_of_sugar_or_sweetener_do_you_add\\?_\\((.*)\\)", "sugar_sweetener_add_\\1", name)
+  } else if (grepl("why_do_you_drink_coffee", name)) {
+    name <- gsub("why_do_you_drink_coffee\\?_\\((.*)\\)", "reason_\\1", name)
+  }
+  name
+}
+)
+
+print(colnames(coffee_clean))
 
 #If column is a question true false, keep first word and parentheses content
 
