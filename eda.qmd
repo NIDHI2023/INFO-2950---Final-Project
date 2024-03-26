@@ -230,6 +230,36 @@ coffee_clean_2 |>
   geom_bar()
 ```
 
+
+```{r}
+#Stephen Graphs
+
+
+library(ggplot2)
+
+# Histogram of Age Distribution
+ggplot(coffee_clean, aes(x = age)) +
+  geom_histogram(stat = "count",binwidth = 5, fill = "skyblue", color = "black") +
+  labs(title = "Age Distribution",
+       x = "Age",
+       y = "Frequency")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+
+# Plot of Cups of Coffee Consumed per Day
+ggplot(coffee_clean, aes(x = "Population", y = cups_of_coffee_per_day, color= age, alpha= 0.7)) +
+  geom_jitter() +
+  labs(title = "Cups of Coffee Consumed per Day",
+       x = "",
+       y = "Cups per Day")
+
+brewing_method_counts <- coffee_clean %>%
+  count(how_else_at_home) %>%
+  arrange(desc(n))
+
+
+```
+
 # Questions for reviewers
 
 List specific questions for your peer reviewers and project mentor to answer in giving you feedback on this phase.
