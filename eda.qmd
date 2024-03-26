@@ -15,6 +15,7 @@ library(tidyverse)
 library(janitor)
 library(dplyr)
 library(skimr)
+library(stringr)
 ```
 
 # Inserting the dataset on Coffee
@@ -247,15 +248,51 @@ ggplot(coffee_clean, aes(x = age)) +
   
 
 # Plot of Cups of Coffee Consumed per Day
-ggplot(coffee_clean, aes(x = "Population", y = cups_of_coffee_per_day, color= age, alpha= 0.7)) +
+ggplot(coffee_clean, aes(x = "Population", y = cups_of_coffee_per_day, color= age, alpha= 0.5)) +
   geom_jitter() +
   labs(title = "Cups of Coffee Consumed per Day",
        x = "",
-       y = "Cups per Day")
+       y = "Cups per Day")+
+  guides(alpha = "none") 
 
+#preferred roast levels
+# Preprocess the data
+coffee_clean_roast <- coffee_clean %>%
+  mutate(roast_level = ifelse(is.na(roast_level), "No Preference", roast_level))
+
+ggplot(coffee_clean_roast, aes(x = roast_level, fill= age)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Preferred Coffee Roast Levels",
+       x = "Roast Level",
+       y = "Frequency",
+       fill= "Age groups per Roast prefrence") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+# processing brewing methods
 brewing_method_counts <- coffee_clean %>%
-  count(how_else_at_home) %>%
-  arrange(desc(n))
+  filter(!is.na(employment_status)) %>%
+  mutate(how_else_at_home = str_replace_all(str_trim(tolower(how_else_at_home)), "\\s+", "")) %>% 
+  mutate(how_else_at_home = ifelse(is.na(how_else_at_home), "No Brewing at home", how_else_at_home))%>%
+  count(how_else_at_home, employment_status) %>%
+  ungroup() %>%
+  arrange(how_else_at_home, desc(n))
+
+t10_brews <- top_n(brewing_method_counts,20)
+
+# Plot for top 10 brewing methods
+ggplot(t10_brews, aes(x = t10_brews$how_else_at_home,
+                      y= n,
+                          fill = t10_brews$employment_status)) +
+  geom_col(position = "dodge") +
+  labs(title = "Preferred Brewing Methods at Home by Employment Status",
+       x = "Brewing Method",
+       y = "Count",
+       fill= "employment status") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")+
+  geom_text(aes(label = n, y = n), position = position_dodge(width = 0.9), vjust = -0.5, color = "black", size = 2.3)
 
 
 ```
