@@ -16,6 +16,7 @@ library(janitor)
 library(dplyr)
 library(skimr)
 library(stringr)
+library(ggplot2)
 ```
 
 # Inserting the dataset on Coffee
@@ -224,9 +225,6 @@ coffee_clean_2 |>
 ```{r}
 #Stephen Graphs
 
-
-library(ggplot2)
-
 # Histogram of Age Distribution
 ggplot(coffee_clean, aes(x = age)) +
   geom_histogram(stat = "count",binwidth = 5, fill = "skyblue", color = "black") +
@@ -244,8 +242,8 @@ ggplot(coffee_clean, aes(x = "Population", y = cups_of_coffee_per_day, color= ag
        y = "Cups per Day")+
   guides(alpha = "none") 
 
-#preferred roast levels
-# Preprocess the data
+#Preferred roast levels
+# preprocess the data
 coffee_clean_roast <- coffee_clean %>%
   mutate(roast_level = ifelse(is.na(roast_level), "No Preference", roast_level))
 
@@ -258,6 +256,8 @@ ggplot(coffee_clean_roast, aes(x = roast_level, fill= age)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
+
+# Plot for top 10 brewing methods
 # processing brewing methods
 brewing_method_counts <- coffee_clean %>%
   filter(!is.na(employment_status)) %>%
@@ -269,7 +269,6 @@ brewing_method_counts <- coffee_clean %>%
 
 t10_brews <- top_n(brewing_method_counts,20)
 
-# Plot for top 10 brewing methods
 ggplot(t10_brews, aes(x = t10_brews$how_else_at_home,
                       y= n,
                           fill = t10_brews$employment_status)) +
