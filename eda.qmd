@@ -59,16 +59,8 @@ coffee_clean <- coffee_clean |>
   mutate(`Why do you drink coffee?` = NULL)
 ```
 
-3. The main part of our data cleaning is fixing the column names to be in a tidy format. 
+3. The main part of our data cleaning is fixing the column names to be in a tidy format. We go through and rename columns in the original form of "question? (response)" to "question_response". We also manually rename some confusing results from this method.
 ```{r}
-
-
-#function to simplify question names
-q_simplify <- function(df, col) {
-  df |>
-    select(contains("Where do you typically drink")) |>
-    rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
-}
 
 original_names <- colnames(coffee_clean)
 tidy_names <- gsub(" ", "_", original_names)
@@ -138,15 +130,12 @@ coffee_clean_2 <- coffee_clean |>
   mutate(`what_kind_of_dairy_do_you_add?` = NULL)
 
 print(colnames(coffee_clean_2))
-
-
 ```
-
+4. After renaming our columns, we noticed some of them work nicely as categorical factors. This section goes through and modify them to be factors in a logical order.
 ```{r}
-#TODO: change this to work with coffee_clean_2
 
 #add category
-coffee_clean_3 <- coffee_clean_2 |>
+coffee_clean_factors <- coffee_clean_2 |>
   mutate(age = factor(age)) |>
   mutate(age = fct_relevel(age, c("<18 years old",
                                   "18-24 years old",
@@ -156,15 +145,15 @@ coffee_clean_3 <- coffee_clean_2 |>
                                   "55-64 years old",
                                   ">65 years old")))|>
 
-  mutate(`in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?` = factor(`in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?`)) |>
-  mutate(`in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?` = fct_relevel(`in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?`, c(
+  mutate(monthly_coffee_cost = factor(monthly_coffee_cost),
+         monthly_coffee_cost = fct_relevel(monthly_coffee_cost, c(
     "<$20",
     "$20-$40",
     "$40-$60",
     "$60-$80",
     "$80-$100",
     ">$100"))) |>
-  mutate(across(`do_you_like_the_taste_of_coffee?`:political_affiliation, factor)) |>
+  mutate(across(like_taste:political_affiliation, factor)) |>
   mutate(across(like_coffee:caffeine, factor))
   # mutate(`what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?` = fct_relevel(
   #   "Less than $2",
