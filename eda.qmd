@@ -253,7 +253,7 @@ coffee_clean_2 |>
   ggplot(aes(x = like_coffee, fill = age)) +
   geom_bar()
 
-#coffee like or not by age
+#amount of caffeine by education level
 coffee_clean_2 |>
   ggplot(aes(x = caffeine, fill = education_level)) +
   geom_bar()
@@ -330,6 +330,97 @@ ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_statu
        y = "Employment Status")
 
 
+```
+```{r}
+#Nidhi graphs
+
+#where people typically drink
+coffee_clean_factors |>
+  select(starts_with("drink")) |>
+  summarise(home = mean(drink_at_home, na.rm = TRUE), office = mean(drink_at_the_office, na.rm = TRUE),
+            go = mean(drink_on_the_go, na.rm = TRUE), cafe = mean(drink_at_a_cafe, na.rm = TRUE)) |>
+  pivot_longer(
+    cols = everything(),
+    names_to = "place",
+    values_to = "freq"
+  ) |>
+  ggplot(aes(x = place, y = freq, fill = place)) +
+  geom_col()
+
+```
+
+```{r}
+#where people typically purchase
+purchase_online <- coffee_clean_factors |>
+  select(contains("purchase")) |>
+  select(where_else_purchase_coffee) |>
+  na.omit() |>
+  filter(grepl("online", where_else_purchase_coffee, ignore.case = TRUE))
+purchase_gas_station <- coffee_clean_factors |>
+  select(contains("purchase")) |>
+  select(where_else_purchase_coffee) |>
+  na.omit() |>
+  filter(grepl("gas station", where_else_purchase_coffee, ignore.case = TRUE))
+
+#currently not including gas station and online in other category
+
+coffee_clean_factors |>
+  select(contains("purchase")) |>
+  summarise(chain = mean(purchase_national_chain, na.rm = TRUE), 
+            cafe = mean(purchase_local_cafe, na.rm = TRUE),
+            drive_thru = mean(`purchase_drive-thru`, na.rm = TRUE), 
+            shop = mean(purchase_specialty_coffee_shop, na.rm = TRUE),
+            deli_or_market = mean(purchase_deli_or_supermarket, na.rm = TRUE)) |>
+   pivot_longer(
+    cols = everything(),
+    names_to = "place",
+    values_to = "freq"
+  ) |>
+  ggplot(aes(x = place, y = freq, fill = place)) +
+  geom_col()
+ 
+
+```
+
+```{r}
+#does knowing where coffee comes from affect how much one is willing to pay
+coffee_clean_factors |>
+  select(know_where_coffee_from, most_willing_pay) |>
+  drop_na() |>
+  ggplot(aes(x = know_where_coffee_from, y = most_willing_pay)) +
+  geom_jitter()
+
+```
+```{r}
+#amount of coffee by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
+coffee_clean_factors |>
+  select(gender, cups_of_coffee_per_day) |>
+  drop_na() |>
+  ggplot(aes(x = cups_of_coffee_per_day, fill = gender)) +
+  geom_bar(position= "stack")
+```
+
+```{r}
+coffee_clean_factors |>
+  select(contains("reason")) |>
+  select(other_reason_for_drinking_coffee) |>
+  na.omit() 
+
+#looking at these words and their associations would be interesting. currently not looking at other
+
+coffee_clean_factors |>
+  select(contains("reason")) |>
+   summarise(tastes_good = mean(reason_it_tastes_good, na.rm = TRUE), 
+            caffeine = mean(reason_i_need_the_caffeine, na.rm = TRUE),
+            ritual = mean(reason_i_need_the_ritual, na.rm = TRUE),
+            bathroom = mean(reason_it_makes_me_go_to_the_bathroom, na.rm = TRUE)) |>
+   pivot_longer(
+    cols = everything(),
+    names_to = "reason",
+    values_to = "freq"
+  ) |>
+  ggplot(aes(x = reason, y = freq, fill = reason)) +
+  geom_col()
 ```
 
 # Questions for reviewers
