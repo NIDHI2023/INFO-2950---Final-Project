@@ -1,6 +1,11 @@
 ---
-title: "Project title"
+title: "Brilliant Cassowary"
 subtitle: "Exploratory data analysis"
+author: 
+  - "Nidhi Soma (ns848)"
+  - "Joice Chen (jc3528)"
+  - "Jinpeng Li (jl3496)"
+  - "Stephen Syl-Akinwale (sis33)"
 execute:
   echo: true
 ---
@@ -25,7 +30,7 @@ Research question(s). State your research question (s) clearly.
 
 Have an initial draft of your data cleaning appendix. Document every step that takes your raw data file(s) and turns it into the analysis-ready data set that you would submit with your final project. Include text narrative describing your data collection (downloading, scraping, surveys, etc) and any additional data curation/cleaning (merging data frames, filtering, transformations of variables, etc). Include code for data curation/cleaning, but not collection.
 
-1. Renaming variables
+1. After inserting the data, it is in a table format. We need to evaluate which columns are useful or pretty much empty. This section removes columns with mostly NA values, since they will not be helpful for analysis.
 
 ```{r}
 
@@ -38,7 +43,10 @@ coffee_clean <- coffee_df |>
 #coffee_clean <- coffee_df |>
 #  rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
 
+```
+2. Next, we need to evaluate which columns contain repetitive information. There are a few columns that ask a question, and the next few columns are the answer to that question, so the question itself contains repetive values that we already have in the subsequent column names. This section removes the question columns.
 
+```{r}
 #remove repetitive questions
 coffee_clean <- coffee_clean |>
   mutate(`Where do you typically drink coffee?` = NULL) |>
@@ -48,7 +56,10 @@ coffee_clean <- coffee_clean |>
   mutate(`What kind of diary do you add?` = NULL) |>
   mutate(`What kind of sugar or sweetener do you add?` = NULL) |>
   mutate(`Why do you drink coffee?` = NULL)
+```
 
+3. The main part of our data cleaning is fixing the column names to be in a tidy format. 
+```{r}
 
 
 #function to simplify question names
@@ -106,13 +117,41 @@ colnames(coffee_clean) <- sapply(colnames(coffee_clean), function(name) {
 }
 )
 
+#manually changing some more confusing names
+coffee_clean_2 <- coffee_clean |>
+  rename(at_home_coffee_brewing_machine = `at_home_coffee_brewing_machine_(e.g._mr._coffee)`,
+         at_home_pod_or_capsule_machine = `at_home_pod/capsule_machine_(e.g._keurig/nespresso)`,
+         at_home_coffee_extract = `at_home_coffee_extract_(e.g._cometeer)`,
+         purchase_national_chain = `purchase_national_chain_(e.g._starbucks,_dunkin)`,
+         add_to_none = `add_to_no_-_just_black`,
+         add_to_milk = `add_to_milk,_dairy_alternative,_or_coffee_creamer`,
+         sugar_sweetener_add_artificial_sweeteners = `sugar_sweetener_add_artificial_sweeteners_(e.g.,_splenda)`,
+         sugar_sweetener_add_raw_sugar= `sugar_sweetener_add_raw_sugar_(turbinado)`,
+         where_work = `do_you_work_from_home_or_in_person?`,
+         monthly_coffee_cost = `in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?`,
+         like_taste = `do_you_like_the_taste_of_coffee?`,
+         know_where_coffee_from = `do_you_know_where_your_coffee_comes_from?`,
+         most_pay = `what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?`,
+         most_willing_pay = `what_is_the_most_you'd_ever_be_willing_to_pay_for_a_cup_of_coffee?`,
+         good_value_money = `do_you_feel_like_you’re_getting_good_value_for_your_money_when_you_buy_coffee_at_a_cafe?`) |>
+  mutate(`what_kind_of_dairy_do_you_add?` = NULL)
+
+print(colnames(coffee_clean_2))
+
+
+```
+
+```{r}
+#TODO: change this to work with coffee_clean_2
+
 #add category
-coffee_clean <- coffee_clean |>
+coffee_clean_3 <- coffee_clean_2 |>
   mutate(age = factor(age)) |>
   mutate(age = fct_relevel(age, c("<18 years old",
                                   "18-24 years old",
                                   "25-34 years old",
-                                  "35-44 years old", "45-54 years old",
+                                  "35-44 years old", 
+                                  "45-54 years old",
                                   "55-64 years old",
                                   ">65 years old")))|>
 
@@ -148,46 +187,6 @@ coffee_clean <- coffee_clean |>
   # )
 
 
-
-#If column is a question true false, keep first word and parentheses content
-
-#if_else("(|)|What|Where|where|How|flavor|?",
-#        true,
-#        false)
-# for example, for column "where do you typically drink coffee (at home)" --> "where_at_home" ;)
-
-#rename_with(insert our function, .cols = everything())
-
-
-# coffee_clean <- coffee_clean |>
-#   select(contains("Where do you typically drink")) |>
-#   rename_with(~str_extract(.x, '(?<=\\().*?(?=\\))'))
-#   
-
-```
-
-```{r}
-#manually changing some more confusing names
-coffee_clean_2 <- coffee_clean |>
-  rename(at_home_coffee_brewing_machine = `at_home_coffee_brewing_machine_(e.g._mr._coffee)`,
-         at_home_pod_or_capsule_machine = `at_home_pod/capsule_machine_(e.g._keurig/nespresso)`,
-         at_home_coffee_extract = `at_home_coffee_extract_(e.g._cometeer)`,
-         purchase_national_chain = `purchase_national_chain_(e.g._starbucks,_dunkin)`,
-         add_to_none = `add_to_no_-_just_black`,
-         add_to_milk = `add_to_milk,_dairy_alternative,_or_coffee_creamer`,
-         sugar_sweetener_add_artificial_sweeteners = `sugar_sweetener_add_artificial_sweeteners_(e.g.,_splenda)`,
-         sugar_sweetener_add_raw_sugar= `sugar_sweetener_add_raw_sugar_(turbinado)`,
-         where_work = `do_you_work_from_home_or_in_person?`,
-         monthly_coffee_cost = `in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?`,
-         like_taste = `do_you_like_the_taste_of_coffee?`,
-         know_where_coffee_from = `do_you_know_where_your_coffee_comes_from?`,
-         most_pay = `what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?`,
-         most_willing_pay = `what_is_the_most_you'd_ever_be_willing_to_pay_for_a_cup_of_coffee?`,
-         good_value_money = `do_you_feel_like_you’re_getting_good_value_for_your_money_when_you_buy_coffee_at_a_cafe?`) |>
-  mutate(`what_kind_of_dairy_do_you_add?` = NULL)
-
-print(colnames(coffee_clean_2))
-#print(colnames(coffee_clean))
 ```
 
 # Data description
