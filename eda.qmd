@@ -281,7 +281,16 @@ ggplot(t10_brews, aes(x = t10_brews$how_else_at_home,
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "right")+
-  geom_text(aes(label = n, y = n), position = position_dodge(width = 0.9), vjust = -0.5, color = "black", size = 2.3)
+  geom_text(aes(label = n, y = n), position = position_dodge(width = 0.9), vjust = -0.5, color = "black", size = 2.1)
+
+# Coffees per day and Employment
+coffee_clean_employ= coffee_clean|>
+  mutate(employment_status = ifelse(is.na(employment_status), "No disclosure", employment_status))
+ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_status)) +
+  geom_count() +
+  labs(title = "Correlation between Coffees per Day and Employment Status",
+       x = "Cups of Coffee per Day",
+       y = "Employment Status")
 
 
 ```
