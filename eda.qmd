@@ -155,7 +155,36 @@ coffee_clean_factors <- coffee_clean_2 |>
     "$80-$100",
     ">$100"))) |>
   mutate(across(like_taste:political_affiliation, factor)) |>
-  mutate(across(like_coffee:caffeine, factor))
+  mutate(across(like_coffee:caffeine, factor)) |>
+  mutate(most_pay = fct_relevel(
+    "Less than $2",
+    "$2-$4",
+    "$4-$6",
+    "$6-$8",
+    "$8-$10",
+    "$10-$15",
+    "$15-$20",
+    "More than $20"
+   )) |>
+    mutate(most_willing_pay = fct_relevel(
+    "Less than $2",
+    "$2-$4",
+    "$4-$6",
+    "$6-$8",
+    "$8-$10",
+    "$10-$15",
+    "$15-$20",
+    "More than $20"
+  )) |>
+  mutate(cups_of_coffee_per_day = as_factor(cups_of_coffee_per_day),
+         cups_of_coffee_per_day = fct_relevel("Less than 1",
+                                              "1",
+                                              "2",
+                                              "3",
+                                              "4",
+                                              "More than 4"))
+
+glimpse(coffee_clean_factors)
   # mutate(`what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?` = fct_relevel(
   #   "Less than $2",
   #   "$2-$4",
@@ -183,6 +212,14 @@ coffee_clean_factors <- coffee_clean_2 |>
 # Data description
 
 Have an initial draft of your data description section. Your data description should be about your analysis-ready data.
+
+
+*What are the observations (rows) and the attributes (columns)?*
+*Why was this dataset created?*
+*Who funded the creation of the dataset?*
+*What processes might have influenced what data was observed and recorded and what was not?*
+*What preprocessing was done, and how did the data come to be in the form that you are using?*
+*If people are involved, were they aware of the data collection and if so, what purpose did they expect the data to be used for?*
 
 # Data limitations
 
