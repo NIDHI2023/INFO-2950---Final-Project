@@ -131,14 +131,27 @@ coffee_clean_2 <- coffee_clean |>
          good_value_money = `do_you_feel_like_you’re_getting_good_value_for_your_money_when_you_buy_coffee_at_a_cafe?`) |>
   mutate(`what_kind_of_dairy_do_you_add?` = NULL)
 
-print(colnames(coffee_clean_2))
 ```
 4. After renaming our columns, we noticed some of them work nicely as categorical factors. This section goes through and modify them to be factors in a logical order.
 ```{r}
 
-#add category
+#change type to categorical
+
 coffee_clean_factors <- coffee_clean_2 |>
-  mutate(age = factor(age)) |>
+  mutate(age = factor(age),
+         monthly_coffee_cost = factor(monthly_coffee_cost))|>
+  mutate(across(like_taste:political_affiliation, factor)) |>
+  mutate(across(like_coffee:caffeine, factor)) |>
+  mutate(cups_of_coffee_per_day = as_factor(cups_of_coffee_per_day))|>
+  mutate(best_described_before = factor(best_described_before))
+
+```
+
+```{r}
+
+#add category
+
+coffee_clean_factors <- coffee_clean_factors |>
   mutate(age = fct_relevel(age, c("<18 years old",
                                   "18-24 years old",
                                   "25-34 years old",
@@ -146,19 +159,16 @@ coffee_clean_factors <- coffee_clean_2 |>
                                   "45-54 years old",
                                   "55-64 years old",
                                   ">65 years old")))|>
-
-  mutate(monthly_coffee_cost = factor(monthly_coffee_cost),
-         monthly_coffee_cost = fct_relevel(monthly_coffee_cost, c(
+  mutate(monthly_coffee_cost = fct_relevel(monthly_coffee_cost, c(
     "<$20",
     "$20-$40",
     "$40-$60",
     "$60-$80",
     "$80-$100",
     ">$100"))) |>
-  mutate(across(like_taste:political_affiliation, factor)) |>
-  mutate(across(like_coffee:caffeine, factor)) |>
   mutate(most_pay = fct_relevel(
-    "Less than $2",
+    most_pay,
+    c("Less than $2",
     "$2-$4",
     "$4-$6",
     "$6-$8",
@@ -166,9 +176,10 @@ coffee_clean_factors <- coffee_clean_2 |>
     "$10-$15",
     "$15-$20",
     "More than $20"
-   )) |>
-    mutate(most_willing_pay = fct_relevel(
-    "Less than $2",
+   ))) |>
+  mutate(most_willing_pay = fct_relevel(
+    most_willing_pay,
+    c("Less than $2",
     "$2-$4",
     "$4-$6",
     "$6-$8",
@@ -176,16 +187,26 @@ coffee_clean_factors <- coffee_clean_2 |>
     "$10-$15",
     "$15-$20",
     "More than $20"
-  )) |>
-  mutate(cups_of_coffee_per_day = as_factor(cups_of_coffee_per_day),
-         cups_of_coffee_per_day = fct_relevel("Less than 1",
+  ))) |>
+  mutate(cups_of_coffee_per_day = fct_relevel(cups_of_coffee_per_day,
+                                              c("Less than 1",
                                               "1",
                                               "2",
                                               "3",
                                               "4",
-                                              "More than 4"))
+                                              "More than 4"))) |>
+  mutate(caffeine = fct_relevel(caffeine,
+                                c("Decaf", "Half caff", "Full caffeine"))) |>
+  mutate(like_coffee = fct_relevel(like_coffee,
+                                   c("Weak",
+                                     "Somewhat light",
+                                     "Medium",
+                                     "Somewhat strong",
+                                     "Very strong")))
+  
+           
 
-glimpse(coffee_clean_factors)
+#glimpse(coffee_clean_factors)
   # mutate(`what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?` = fct_relevel(
   #   "Less than $2",
   #   "$2-$4",
@@ -248,29 +269,46 @@ Perform an (initial) exploratory data analysis.
 ```{r}
 #Joice graphs
 #sweetener by age
-coffee_clean_2 |>
-  ggplot(aes(x = age, y = add_to_sugar_or_sweetener)) +
-  geom_col()
+coffee_clean_factors |>
+  select(age, add_to_sugar_or_sweetener)|>
+  drop_na() |>
+  ggplot(aes(x = age,
+             y = add_to_sugar_or_sweetener,
+             fill = add_to_sugar_or_sweetener)) +
+  geom_col() +
+  labs(title = "Do you add sweetener to coffee by age group")
 
 #coffee payment political affiliation
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(political_affiliation, like_coffee) |>
+  drop_na() |>
   ggplot(aes(x = political_affiliation, y = like_coffee)) +
-  geom_count()
+  geom_count() +
+  labs(title = "Coffee Liking by political affiliation")
 
 #coffee expected and actual pay
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(most_pay, education_level) |>
+  drop_na() |>
   ggplot(aes(x = most_pay, y = education_level)) +
-  geom_count()
+  geom_count() +
+  labs(title = "Most amount willing to pay for coffee by education level")
 
 #coffee like or not by age
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(like_coffee, age) |>
+  drop_na() |>
   ggplot(aes(x = like_coffee, fill = age)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Do you like coffee or not by age group")
 
 #amount of caffeine by education level
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(caffeine, education_level) |>
+  drop_na() |>
   ggplot(aes(x = caffeine, fill = education_level)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Amount of caffeine in coffee by education level")
 ```
 
 
