@@ -225,7 +225,7 @@ Have an initial draft of your data description section. Your data description sh
 
 
 *What are the observations (rows) and the attributes (columns)?*
-The observations represent an individual respondent to the survey. The columns are questions that they answered, ranging from demographic data to coffee preferences.
+The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns.
 
 *Why was this dataset created?*
 To understand the general public's preferences as consumers for coffee.
@@ -242,6 +242,12 @@ Zip codes and geographic data seemed to have been removed. Participants were ano
 *If people are involved, were they aware of the data collection and if so, what purpose did they expect the data to be used for?*
 People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
 
+*Notes*
+Coffee A - Light roast, Washed
+Coffee B - Medium Roast
+Coffee C - Dark roast
+Coffee D - Fermented, Natural, Fruity
+
 # Data limitations
 
 Identify any potential problems with your dataset.
@@ -249,6 +255,7 @@ Identify any potential problems with your dataset.
 - There are many NA values across the dataset.
 - Demographics are only limited to people in the US, and most respondents are likely coffee     specialists, which introduces a bias in the data, so it cannot be generalized to the US       public's coffee preferences.
 - In the other columns, there is no clear order in the answers, so it is hard to sort through   and find extra patterns.
+- Mostly categorical variables, very few continuous values
 
 
 # Exploratory data analysis
@@ -271,8 +278,18 @@ skim()
 
 Above 4 points tells us in general the demographics of people who took this survey - mostly middle aged white men affiliated with Democratic party
 
--Could assess relationship between caffeine, roast_level, best_described_before, and own_expertise to see how experience affects preferences, and if perceived preferences matches with actual preferences
--The ratio of satisfied to unsatisfied of getting good value for money is about the same more males and females, but nonbinary people have a higher ratio (also very likely because less sample)
+-Could assess relationship between caffeine, roast_level, best_described_before, add_to_* and own_expertise to see how experience affects preferences, and if perceived preferences matches with actual preferences (as shown in the actual taste test results)
+-The ratio of satisfied to unsatisfied of getting good value for money is about the same for males and females, but nonbinary people have a higher ratio (also very likely because less sample)
+
+```{r}
+coffee_clean_factors |>
+  group_by(own_coffee_expertise) |>
+skim()
+```
+-People with higher expertise have more of a tendency to make pour overs (most common). Espresso is more common across everyone but still people with higher expertise have a higher frequency for this
+-Relationship between type of coffee machine, where people get coffee, how often they drink, caffeine. Sample question to look into could be: do people who get coffee on the go more like more caffeine, either instant or higher quality?
+-Experienced people seem to not add sweeteners (different from dairy) to their coffee
+- Do younger people prefer certain types of dairy/sweetners/flavors? (for example oat milk is more common these days)
 
 ```{r}
 #Joice graphs
