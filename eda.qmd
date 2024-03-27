@@ -265,7 +265,7 @@ coffee_clean_2 |>
 
 # Histogram of Age Distribution
 ggplot(coffee_clean, aes(x = age)) +
-  geom_histogram(stat = "count",binwidth = 5, fill = "skyblue", color = "black") +
+  geom_histogram(stat = "count", fill = "skyblue") +
   labs(title = "Age Distribution",
        x = "Age",
        y = "Frequency")+
