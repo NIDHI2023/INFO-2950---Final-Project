@@ -79,7 +79,8 @@ coffee_clean <- coffee_clean |>
     where_else_purchase_coffee = "where_else_do_you_purchase_coffee?",
     favorite_coffee_drink = "what_is_your_favorite_coffee_drink?",
     favorite_coffee = "please_specify_what_your_favorite_coffee_drink_is", 
-    prefer_between_abc = "between_coffee_a,_coffee_b,_and_coffee_c_which_did_you_prefer?", 
+    prefer_between_abc = 
+      "between_coffee_a,_coffee_b,_and_coffee_c_which_did_you_prefer?", 
     other_flavoring = "what_other_flavoring_do_you_use?", 
     best_described_before = "before_today's_tasting,_which_of_the_following_best_described_what_kind_of_coffee_you_like?", 
     like_coffee = "how_strong_do_you_like_your_coffee?", 
@@ -89,20 +90,24 @@ coffee_clean <- coffee_clean |>
     prefer_between_ad = "between_coffee_a_and_coffee_d,_which_did_you_prefer?", 
     favorite_overall_coffee = "lastly,_what_was_your_favorite_overall_coffee?", 
     time_spent_on_equipment = "approximately_how_much_have_you_spent_on_coffee_equipment_in_the_past_5_years?", 
-    good_value_equipment = "do_you_feel_like_you’re_getting_good_value_for_your_money_with_regards_to_your_coffee_equipment?"
+    good_value_equipment="do_you_feel_like_you’re_getting_good_value_for_your_money_with_regards_to_your_coffee_equipment?"
   )
 
 colnames(coffee_clean) <- sapply(colnames(coffee_clean), function(name) {
   if (grepl("where_do_you_typically_drink_coffee", name)) {
-    name <- gsub("where_do_you_typically_drink_coffee\\?_\\((.*)\\)", "drink_\\1", name)
+    name <- gsub("where_do_you_typically_drink_coffee\\?_\\((.*)\\)", "drink_\\1",
+                 name)
   } else if (grepl("how_do_you_brew_coffee_at_home", name)) {
-    name <- gsub("how_do_you_brew_coffee_at_home\\?_\\((.*)\\)", "at_home_\\1", name)
+    name <- gsub("how_do_you_brew_coffee_at_home\\?_\\((.*)\\)", "at_home_\\1",
+                 name)
   } else if (grepl("on_the_go,_where_do_you_typically_purchase_coffee", name)) {
     name <- gsub("on_the_go,_where_do_you_typically_purchase_coffee\\?_\\((.*)\\)", "purchase_\\1", name)
   } else if (grepl("do_you_usually_add_anything_to_your_coffee", name)) {
-    name <- gsub("do_you_usually_add_anything_to_your_coffee\\?_\\((.*)\\)", "add_to_\\1", name)
+    name <- gsub("do_you_usually_add_anything_to_your_coffee\\?_\\((.*)\\)", 
+                 "add_to_\\1", name)
   } else if (grepl("what_kind_of_dairy_do_you_add", name)) {
-    name <- gsub("what_kind_of_dairy_do_you_add\\?_\\((.*)\\)", "dairy_add_\\1", name)
+    name <- gsub("what_kind_of_dairy_do_you_add\\?_\\((.*)\\)", "dairy_add_\\1",
+                 name)
   } else if (grepl("what_kind_of_sugar_or_sweetener_do_you_add", name)) {
     name <- gsub("what_kind_of_sugar_or_sweetener_do_you_add\\?_\\((.*)\\)", "sugar_sweetener_add_\\1", name)
   } else if (grepl("why_do_you_drink_coffee", name)) {
@@ -114,14 +119,17 @@ colnames(coffee_clean) <- sapply(colnames(coffee_clean), function(name) {
 
 #manually changing some more confusing names
 coffee_clean_2 <- coffee_clean |>
-  rename(at_home_coffee_brewing_machine = `at_home_coffee_brewing_machine_(e.g._mr._coffee)`,
+  rename(at_home_coffee_brewing_machine = 
+           `at_home_coffee_brewing_machine_(e.g._mr._coffee)`,
          at_home_pod_or_capsule_machine = `at_home_pod/capsule_machine_(e.g._keurig/nespresso)`,
          at_home_coffee_extract = `at_home_coffee_extract_(e.g._cometeer)`,
-         purchase_national_chain = `purchase_national_chain_(e.g._starbucks,_dunkin)`,
+         purchase_national_chain = 
+           `purchase_national_chain_(e.g._starbucks,_dunkin)`,
          add_to_none = `add_to_no_-_just_black`,
          add_to_milk = `add_to_milk,_dairy_alternative,_or_coffee_creamer`,
          sugar_sweetener_add_artificial_sweeteners = `sugar_sweetener_add_artificial_sweeteners_(e.g.,_splenda)`,
-         sugar_sweetener_add_raw_sugar= `sugar_sweetener_add_raw_sugar_(turbinado)`,
+         sugar_sweetener_add_raw_sugar= 
+           `sugar_sweetener_add_raw_sugar_(turbinado)`,
          where_work = `do_you_work_from_home_or_in_person?`,
          monthly_coffee_cost = `in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?`,
          like_taste = `do_you_like_the_taste_of_coffee?`,
@@ -165,7 +173,8 @@ coffee_clean_factors <- coffee_clean_2 |>
     "$8-$10",
     "$10-$15",
     "$15-$20",
-    "More than $20"
+    "More than $20",
+    "NA"
    )) |>
     mutate(most_willing_pay = fct_relevel(
     "Less than $2",
@@ -245,6 +254,26 @@ Identify any potential problems with your dataset.
 # Exploratory data analysis
 
 Perform an (initial) exploratory data analysis.
+
+Summary Stats
+```{r}
+skim(coffee_clean_factors)
+```
+```{r}
+coffee_clean_factors |>
+  group_by(gender) |>
+skim()
+```
+-More males than females and other genders
+-Most popular age group is 25-34 years old, with 35-44 as second highest. 
+-Most common race is overwhelmingly white. 
+-Most common political party is Democrat by a large margin
+
+Above 4 points tells us in general the demographics of people who took this survey - mostly middle aged white men affiliated with Democratic party
+
+-Could assess relationship between caffeine, roast_level, best_described_before, and own_expertise to see how experience affects preferences, and if perceived preferences matches with actual preferences
+-The ratio of satisfied to unsatisfied of getting good value for money is about the same more males and females, but nonbinary people have a higher ratio (also very likely because less sample)
+
 ```{r}
 #Joice graphs
 #sweetener by age
@@ -400,7 +429,7 @@ coffee_clean_factors |>
 
 ```{r}
 #does knowing where coffee comes from affect how much one is willing to pay
-coffee_clean_factors |>
+coffee_clean_2 |>
   select(know_where_coffee_from, most_willing_pay) |>
   drop_na() |>
   ggplot(aes(x = know_where_coffee_from, y = most_willing_pay)) +
@@ -443,4 +472,6 @@ coffee_clean_factors |>
 
 List specific questions for your peer reviewers and project mentor to answer in giving you feedback on this phase.
 
-Do we need to close the issue you opened for the first phase?
+-Do we need to close the issue you opened for the first phase?
+-Is it feasible to try to do some textual analysis with the more open ended responses, such as identifying emotions that people associate with coffee?
+-Is there a way to pivot the cleaned data that makes more sense?
