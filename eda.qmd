@@ -216,17 +216,31 @@ Have an initial draft of your data description section. Your data description sh
 
 
 *What are the observations (rows) and the attributes (columns)?*
+The observations represent an individual respondent to the survey. The columns are questions that they answered, ranging from demographic data to coffee preferences.
+
 *Why was this dataset created?*
+To understand the general public's preferences as consumers for coffee.
+
 *Who funded the creation of the dataset?*
+James Hoffman and Cometeer.
+
 *What processes might have influenced what data was observed and recorded and what was not?*
+The survey quickly was sold out, and Hoffman's audience in general is coffee specialists. That will likely skew the population surveyed to be people who likely prefer specialty coffee, so it may be a biased sample. Additionally, this survey was conducted through people ordering tasting kits online, which were then sent to the participants to prepare and complete voluntarily, so there may have been differences in that. One example is that because participants were following a livestream to demonstrate how to do their taste test, their coffees may have been out long enough to have cooled, which could be another unaccounted variable that affected their taste preferences.
+
 *What preprocessing was done, and how did the data come to be in the form that you are using?*
+Zip codes and geographic data seemed to have been removed. Participants were anonymized to protect their privacy. It wasn't disclosed how Hoffmann and his team collected all the taste test results that participants filled out, but once they got that data, they made it into a spreadsheet to be shared with the public.
+
 *If people are involved, were they aware of the data collection and if so, what purpose did they expect the data to be used for?*
+People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
 
 # Data limitations
 
 Identify any potential problems with your dataset.
 
-There are many NA values across the dataset.
+- There are many NA values across the dataset.
+- Demographics are only limited to people in the US, and most respondents are likely coffee     specialists, which introduces a bias in the data, so it cannot be generalized to the US       public's coffee preferences.
+- In the other columns, there is no clear order in the answers, so it is hard to sort through   and find extra patterns.
+
 
 # Exploratory data analysis
 
@@ -331,6 +345,8 @@ ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_statu
 
 
 ```
+
+
 ```{r}
 #Nidhi graphs
 
@@ -426,3 +442,5 @@ coffee_clean_factors |>
 # Questions for reviewers
 
 List specific questions for your peer reviewers and project mentor to answer in giving you feedback on this phase.
+
+Do we need to close the issue you opened for the first phase?
