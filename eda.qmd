@@ -29,6 +29,8 @@ coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 
 Research question(s). State your research question (s) clearly.
 
+- How does coffee preference and consumption habits differ by demographic attributes.
+
 # Data collection and cleaning
 
 Have an initial draft of your data cleaning appendix. Document every step that takes your raw data file(s) and turns it into the analysis-ready data set that you would submit with your final project. Include text narrative describing your data collection (downloading, scraping, surveys, etc) and any additional data curation/cleaning (merging data frames, filtering, transformations of variables, etc). Include code for data curation/cleaning, but not collection.
