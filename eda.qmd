@@ -28,10 +28,13 @@ coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 # Research question(s)
 
 Research question(s). State your research question (s) clearly.
--How does coffee preference and consumption habits differ by demographic groups (age, gender, ethnicity)?
--How does self-perceived coffee experience affect actual and stated preferences?
 
-- How does coffee preference and consumption habits differ by demographic attributes.
+-How does self-perceived coffee experience affect actual and stated preferences?
+- How does coffee preference and consumption habits differ by demographic
+attributes such as age, gender, education level, and political identity?
+- How does different coffee consumption habits, such as the type of sweetener
+added and the milk used, correlate with each other. 
+- How much do people's coffee consumption habits differ from each other?
 
 # Data collection and cleaning
 
