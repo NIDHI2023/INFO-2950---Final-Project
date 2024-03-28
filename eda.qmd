@@ -29,6 +29,13 @@ coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 
 Research question(s). State your research question (s) clearly.
 
+-How does self-perceived coffee experience affect actual and stated preferences?
+- How does coffee preference and consumption habits differ by demographic
+attributes such as age, gender, education level, and political identity?
+- How does different coffee consumption habits, such as the type of sweetener
+added and the milk used, correlate with each other. 
+- How much do people's coffee consumption habits differ from each other?
+
 # Data collection and cleaning
 
 Have an initial draft of your data cleaning appendix. Document every step that takes your raw data file(s) and turns it into the analysis-ready data set that you would submit with your final project. Include text narrative describing your data collection (downloading, scraping, surveys, etc) and any additional data curation/cleaning (merging data frames, filtering, transformations of variables, etc). Include code for data curation/cleaning, but not collection.
@@ -131,14 +138,27 @@ coffee_clean_2 <- coffee_clean |>
          good_value_money = `do_you_feel_like_you’re_getting_good_value_for_your_money_when_you_buy_coffee_at_a_cafe?`) |>
   mutate(`what_kind_of_dairy_do_you_add?` = NULL)
 
-print(colnames(coffee_clean_2))
 ```
 4. After renaming our columns, we noticed some of them work nicely as categorical factors. This section goes through and modify them to be factors in a logical order.
 ```{r}
 
-#add category
+#change type to categorical
+
 coffee_clean_factors <- coffee_clean_2 |>
-  mutate(age = factor(age)) |>
+  mutate(age = factor(age),
+         monthly_coffee_cost = factor(monthly_coffee_cost))|>
+  mutate(across(like_taste:political_affiliation, factor)) |>
+  mutate(across(like_coffee:caffeine, factor)) |>
+  mutate(cups_of_coffee_per_day = as_factor(cups_of_coffee_per_day))|>
+  mutate(best_described_before = factor(best_described_before))
+
+```
+
+```{r}
+
+#add category
+
+coffee_clean_factors <- coffee_clean_factors |>
   mutate(age = fct_relevel(age, c("<18 years old",
                                   "18-24 years old",
                                   "25-34 years old",
@@ -146,19 +166,16 @@ coffee_clean_factors <- coffee_clean_2 |>
                                   "45-54 years old",
                                   "55-64 years old",
                                   ">65 years old")))|>
-
-  mutate(monthly_coffee_cost = factor(monthly_coffee_cost),
-         monthly_coffee_cost = fct_relevel(monthly_coffee_cost, c(
+  mutate(monthly_coffee_cost = fct_relevel(monthly_coffee_cost, c(
     "<$20",
     "$20-$40",
     "$40-$60",
     "$60-$80",
     "$80-$100",
     ">$100"))) |>
-  mutate(across(like_taste:political_affiliation, factor)) |>
-  mutate(across(like_coffee:caffeine, factor)) |>
   mutate(most_pay = fct_relevel(
-    "Less than $2",
+    most_pay,
+    c("Less than $2",
     "$2-$4",
     "$4-$6",
     "$6-$8",
@@ -166,9 +183,10 @@ coffee_clean_factors <- coffee_clean_2 |>
     "$10-$15",
     "$15-$20",
     "More than $20"
-   )) |>
-    mutate(most_willing_pay = fct_relevel(
-    "Less than $2",
+   ))) |>
+  mutate(most_willing_pay = fct_relevel(
+    most_willing_pay,
+    c("Less than $2",
     "$2-$4",
     "$4-$6",
     "$6-$8",
@@ -176,16 +194,26 @@ coffee_clean_factors <- coffee_clean_2 |>
     "$10-$15",
     "$15-$20",
     "More than $20"
-  )) |>
-  mutate(cups_of_coffee_per_day = as_factor(cups_of_coffee_per_day),
-         cups_of_coffee_per_day = fct_relevel("Less than 1",
+  ))) |>
+  mutate(cups_of_coffee_per_day = fct_relevel(cups_of_coffee_per_day,
+                                              c("Less than 1",
                                               "1",
                                               "2",
                                               "3",
                                               "4",
-                                              "More than 4"))
+                                              "More than 4"))) |>
+  mutate(caffeine = fct_relevel(caffeine,
+                                c("Decaf", "Half caff", "Full caffeine"))) |>
+  mutate(like_coffee = fct_relevel(like_coffee,
+                                   c("Weak",
+                                     "Somewhat light",
+                                     "Medium",
+                                     "Somewhat strong",
+                                     "Very strong")))
+  
+           
 
-glimpse(coffee_clean_factors)
+#glimpse(coffee_clean_factors)
   # mutate(`what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?` = fct_relevel(
   #   "Less than $2",
   #   "$2-$4",
@@ -215,8 +243,9 @@ glimpse(coffee_clean_factors)
 Have an initial draft of your data description section. Your data description should be about your analysis-ready data.
 
 
+
 *What are the observations (rows) and the attributes (columns)?*
-The observations represent an individual respondent to the survey. The columns are questions that they answered, ranging from demographic data to coffee preferences.
+The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns.
 
 *Why was this dataset created?*
 To understand the general public's preferences as consumers for coffee.
@@ -233,49 +262,103 @@ Zip codes and geographic data seemed to have been removed. Participants were ano
 *If people are involved, were they aware of the data collection and if so, what purpose did they expect the data to be used for?*
 People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
 
+*Notes*
+Coffee A - Light roast, Washed
+Coffee B - Medium Roast
+Coffee C - Dark roast
+Coffee D - Fermented, Natural, Fruity
+
 # Data limitations
 
 Identify any potential problems with your dataset.
 
-- There are many NA values across the dataset.
-- Demographics are only limited to people in the US, and most respondents are likely coffee     specialists, which introduces a bias in the data, so it cannot be generalized to the US       public's coffee preferences.
-- In the other columns, there is no clear order in the answers, so it is hard to sort through   and find extra patterns.
+- There are many NA values across the dataset, which could lead to skewed statistics.
+- Demographics are only limited to people in the US, and most respondents are likely coffee     specialists, which introduces a bias in the data, so it cannot be generalized to the US       public's coffee preferences. Suppose a foreign coffee company was analyzing this data - any conclusions they draw where they adjust their coffee marketing could be harmful to them because the demographic isn't for their market.
+- In the other columns, there is no clear order in the answers, so it is hard to sort through   and find extra patterns. This could limit us in more interesting text analysis.
+- Mostly categorical variables, very few continuous values, so it limits our ability to do more quantitative analysis. We will have to use more visualizations and models suited for discrete data.
 
 
 # Exploratory data analysis
 
 Perform an (initial) exploratory data analysis.
+Summary Stats
 ```{r}
-#Joice graphs
+#| label: summary-stats
+skim(coffee_clean_factors)
+```
+```{r}
+coffee_clean_factors |>
+  group_by(gender) |>
+skim()
+```
+-More males than females and other genders
+-Most popular age group is 25-34 years old, with 35-44 as second highest. 
+-Most common race is overwhelmingly white. 
+-Most common political party is Democrat by a large margin
+
+Above 4 points tells us in general the demographics of people who took this survey - mostly middle aged white men affiliated with Democratic party
+
+-Could assess relationship between caffeine, roast_level, best_described_before, add_to_* and own_expertise to see how experience affects preferences, and if perceived preferences matches with actual preferences (as shown in the actual taste test results)
+-The ratio of satisfied to unsatisfied of getting good value for money is about the same for males and females, but nonbinary people have a higher ratio (also very likely because less sample)
+
+```{r}
+coffee_clean_factors |>
+  group_by(own_coffee_expertise) |>
+skim()
+```
+-People with higher expertise have more of a tendency to make pour overs (most common). Espresso is more common across everyone but still people with higher expertise have a higher frequency for this
+-Relationship between type of coffee machine, where people get coffee, how often they drink, caffeine. Sample question to look into could be: do people who get coffee on the go more like more caffeine, either instant or higher quality?
+-Experienced people seem to not add sweeteners (different from dairy) to their coffee
+- Do younger people prefer certain types of dairy/sweetners/flavors? (for example oat milk is more common these days)
+
+```{r}
+#| label: Joice graphs
 #sweetener by age
-coffee_clean_2 |>
-  ggplot(aes(x = age, y = add_to_sugar_or_sweetener)) +
-  geom_col()
+coffee_clean_factors |>
+  select(age, add_to_sugar_or_sweetener)|>
+  drop_na() |>
+  ggplot(aes(x = age,
+             y = add_to_sugar_or_sweetener,
+             fill = add_to_sugar_or_sweetener)) +
+  geom_col() +
+  labs(title = "Do you add sweetener to coffee by age group")
 
 #coffee payment political affiliation
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(political_affiliation, like_coffee) |>
+  drop_na() |>
   ggplot(aes(x = political_affiliation, y = like_coffee)) +
-  geom_count()
+  geom_count() +
+  labs(title = "Coffee Liking by political affiliation")
 
 #coffee expected and actual pay
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(most_pay, education_level) |>
+  drop_na() |>
   ggplot(aes(x = most_pay, y = education_level)) +
-  geom_count()
+  geom_count() +
+  labs(title = "Most amount willing to pay for coffee by education level")
 
 #coffee like or not by age
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(like_coffee, age) |>
+  drop_na() |>
   ggplot(aes(x = like_coffee, fill = age)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Do you like coffee or not by age group")
 
 #amount of caffeine by education level
-coffee_clean_2 |>
+coffee_clean_factors |>
+  select(caffeine, education_level) |>
+  drop_na() |>
   ggplot(aes(x = caffeine, fill = education_level)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Amount of caffeine in coffee by education level")
 ```
 
 
 ```{r}
-#Stephen Graphs
+#| label: Stephen Graphs
 
 # Histogram of Age Distribution
 ggplot(coffee_clean, aes(x = age)) +
@@ -348,7 +431,7 @@ ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_statu
 
 
 ```{r}
-#Nidhi graphs
+#| label: Nidhi graphs
 
 #where people typically drink
 coffee_clean_factors |>
@@ -398,6 +481,7 @@ coffee_clean_factors |>
 
 ```
 
+
 ```{r}
 #does knowing where coffee comes from affect how much one is willing to pay
 coffee_clean_factors |>
@@ -439,8 +523,115 @@ coffee_clean_factors |>
   geom_col()
 ```
 
+
+```{r}
+#| label: Jinpeng's Graph
+
+#preferences for coffee roast levels across different age groups.
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
+
+age_roast_counts <- coffee_clean_factors |>
+  filter(!is.na(roast_level) & !is.na(age)) |>
+  group_by(age, roast_level) |>
+  summarise(count = n()) |>
+  left_join(roast_totals, by = "roast_level") |>
+  mutate(percentage = count / total * 100)
+
+ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Coffee Roast Level Preferences by Age Group",
+       x = "Roast Level",
+       y = "Percentage") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#how different additives (milk, sugar, or flavorings) affect people's preferences
+coffee_additives <- coffee_clean_factors |>
+  select(add_to_milk, 
+         add_to_sugar_or_sweetener, 
+         add_to_flavor_syrup, 
+         add_to_other) |>
+  pivot_longer(
+    cols = c(add_to_milk, 
+             add_to_sugar_or_sweetener, 
+             add_to_flavor_syrup, 
+             add_to_other),
+    names_to = "additive",
+    values_to = "count"
+  ) |>
+  filter(!is.na(count)) |>
+  group_by(additive) |>
+  summarise(total = sum(count, na.rm = TRUE), .groups = 'drop')
+
+ggplot(coffee_additives, aes(x = additive, y = total, fill = additive)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Preference for Coffee Additives",
+       x = "Additive",
+       y = "Total Count") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#Coffee Consumption and Employment Status
+ggplot(coffee_clean_factors |> filter(!is.na(employment_status)), 
+       aes(x = employment_status, fill = cups_of_coffee_per_day)) +
+  geom_bar(position = "stack") +
+  labs(title = "Coffee Consumption and Employment Status", 
+       x = "Employment Status", 
+       y = "Count") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#distribution of favorite coffee drinks 
+ggplot(coffee_clean_factors |> filter(!is.na(favorite_coffee_drink)), 
+       aes(x = favorite_coffee_drink)) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Favorite Coffee Drink Preferences", 
+       x = "Coffee Drink", 
+       y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_viridis_d(end = 0.8)
+
+#the relationship between coffee consumption habits and the reasons
+#why people drink coffee（aste versus the need for caffeine）
+coffee_reasons <- coffee_clean_factors |>
+  select(cups_of_coffee_per_day, 
+         reason_it_tastes_good, 
+         reason_i_need_the_caffeine) |>
+  mutate(cups_of_coffee_per_day = 
+           as.numeric(as.character(cups_of_coffee_per_day)),
+         reason_taste = 
+           ifelse(reason_it_tastes_good == 1, "Taste", NA),
+         reason_caffeine = 
+           ifelse(reason_i_need_the_caffeine == 1, "Caffeine", NA)) |>
+  drop_na(cups_of_coffee_per_day) |>
+  gather(key = "reason", value = "value", reason_taste, reason_caffeine) |>
+  filter(!is.na(value))
+
+ggplot(coffee_reasons, 
+       aes(x = as.factor(cups_of_coffee_per_day), 
+           fill = reason)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Coffee Consumption: Taste vs. Caffeine Need",
+       x = "Cups of Coffee per Day",
+       y = "Percentage",
+       fill = "Reason") +
+  theme_minimal() 
+
+
+
+
+
+
+```
+
 # Questions for reviewers
 
 List specific questions for your peer reviewers and project mentor to answer in giving you feedback on this phase.
 
-Do we need to close the issue you opened for the first phase?
+-Do we need to close the issue you opened for the first phase?
+-Is it feasible to try to do some textual analysis with the more open ended responses, such as identifying emotions that people associate with coffee?
+-Is there a way to pivot the cleaned data that makes more sense?
