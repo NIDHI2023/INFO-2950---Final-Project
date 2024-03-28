@@ -481,6 +481,7 @@ coffee_clean_factors |>
 
 ```
 
+
 ```{r}
 #does knowing where coffee comes from affect how much one is willing to pay
 coffee_clean_factors |>
@@ -520,6 +521,99 @@ coffee_clean_factors |>
   ) |>
   ggplot(aes(x = reason, y = freq, fill = reason)) +
   geom_col()
+```
+
+
+```{r}
+#| label: Jinpeng's Graph
+
+#preferences for coffee roast levels across different age groups.
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
+
+age_roast_counts <- coffee_clean_factors |>
+  filter(!is.na(roast_level) & !is.na(age)) |>
+  group_by(age, roast_level) |>
+  summarise(count = n()) |>
+  left_join(roast_totals, by = "roast_level") |>
+  mutate(percentage = count / total * 100)
+
+ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Coffee Roast Level Preferences by Age Group",
+       x = "Roast Level",
+       y = "Percentage") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#where respondents purchase their coffee
+coffee_purchase_locations <- coffee_clean_factors |>
+  gather(key = "location", value = "count", purchase_national_chain:purchase_other) |>
+  group_by(location) |>
+  summarise(total_count = sum(count, na.rm = TRUE))
+
+ggplot(coffee_purchase_locations, aes(x = location, y = total_count, fill = location)) +
+  geom_col() +
+  labs(title = "Coffee Purchase Locations", 
+       x = "Location", 
+       y = "Count") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#Coffee Consumption and Employment Status
+ggplot(coffee_clean_factors |> filter(!is.na(employment_status)), 
+       aes(x = employment_status, fill = cups_of_coffee_per_day)) +
+  geom_bar(position = "stack") +
+  labs(title = "Coffee Consumption and Employment Status", 
+       x = "Employment Status", 
+       y = "Count") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#distribution of favorite coffee drinks 
+ggplot(coffee_clean_factors |> filter(!is.na(favorite_coffee_drink)), 
+       aes(x = favorite_coffee_drink)) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Favorite Coffee Drink Preferences", 
+       x = "Coffee Drink", 
+       y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_viridis_d(end = 0.8)
+
+#the relationship between coffee consumption habits and the reasons
+#why people drink coffee（aste versus the need for caffeine）
+coffee_reasons <- coffee_clean_factors |>
+  select(cups_of_coffee_per_day, 
+         reason_it_tastes_good, 
+         reason_i_need_the_caffeine) |>
+  mutate(cups_of_coffee_per_day = 
+           as.numeric(as.character(cups_of_coffee_per_day)),
+         reason_taste = 
+           ifelse(reason_it_tastes_good == 1, "Taste", NA),
+         reason_caffeine = 
+           ifelse(reason_i_need_the_caffeine == 1, "Caffeine", NA)) |>
+  drop_na(cups_of_coffee_per_day) |>
+  gather(key = "reason", value = "value", reason_taste, reason_caffeine) |>
+  filter(!is.na(value))
+
+ggplot(coffee_reasons, 
+       aes(x = as.factor(cups_of_coffee_per_day), 
+           fill = reason)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Coffee Consumption: Taste vs. Caffeine Need",
+       x = "Cups of Coffee per Day",
+       y = "Percentage",
+       fill = "Reason") +
+  theme_minimal() 
+
+
+
+
+
+
 ```
 
 # Questions for reviewers
