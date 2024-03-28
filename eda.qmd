@@ -547,17 +547,29 @@ ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
   theme_minimal() +
   scale_fill_viridis_d(end = 0.8)
 
-#where respondents purchase their coffee
-coffee_purchase_locations <- coffee_clean_factors |>
-  gather(key = "location", value = "count", purchase_national_chain:purchase_other) |>
-  group_by(location) |>
-  summarise(total_count = sum(count, na.rm = TRUE))
+#how different additives (milk, sugar, or flavorings) affect people's preferences
+coffee_additives <- coffee_clean_factors |>
+  select(add_to_milk, 
+         add_to_sugar_or_sweetener, 
+         add_to_flavor_syrup, 
+         add_to_other) |>
+  pivot_longer(
+    cols = c(add_to_milk, 
+             add_to_sugar_or_sweetener, 
+             add_to_flavor_syrup, 
+             add_to_other),
+    names_to = "additive",
+    values_to = "count"
+  ) |>
+  filter(!is.na(count)) |>
+  group_by(additive) |>
+  summarise(total = sum(count, na.rm = TRUE), .groups = 'drop')
 
-ggplot(coffee_purchase_locations, aes(x = location, y = total_count, fill = location)) +
-  geom_col() +
-  labs(title = "Coffee Purchase Locations", 
-       x = "Location", 
-       y = "Count") +
+ggplot(coffee_additives, aes(x = additive, y = total, fill = additive)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Preference for Coffee Additives",
+       x = "Additive",
+       y = "Total Count") +
   theme_minimal() +
   scale_fill_viridis_d(end = 0.8)
 
