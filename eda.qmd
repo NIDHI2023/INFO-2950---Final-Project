@@ -28,6 +28,8 @@ coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 # Research question(s)
 
 Research question(s). State your research question (s) clearly.
+-How does coffee preference and consumption habits differ by demographic groups (age, gender, ethnicity)?
+-How does self-perceived coffee experience affect actual and stated preferences?
 
 # Data collection and cleaning
 
