@@ -264,6 +264,7 @@ Perform an (initial) exploratory data analysis.
 
 Summary Stats
 ```{r}
+#| label: summary-stats
 skim(coffee_clean_factors)
 ```
 ```{r}
@@ -292,7 +293,7 @@ skim()
 - Do younger people prefer certain types of dairy/sweetners/flavors? (for example oat milk is more common these days)
 
 ```{r}
-#Joice graphs
+#| label: Joice graphs
 #sweetener by age
 coffee_clean_2 |>
   ggplot(aes(x = age, y = add_to_sugar_or_sweetener)) +
@@ -321,7 +322,7 @@ coffee_clean_2 |>
 
 
 ```{r}
-#Stephen Graphs
+#| label: Stephen Graphs
 
 # Histogram of Age Distribution
 ggplot(coffee_clean, aes(x = age)) +
@@ -394,7 +395,7 @@ ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_statu
 
 
 ```{r}
-#Nidhi graphs
+#| label: Nidhi graphs
 
 #where people typically drink
 coffee_clean_factors |>
