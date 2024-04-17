@@ -15,15 +15,23 @@ editor:
 
 # Inserting the dataset on Coffee
 ```{r}
+library(tidyverse)
 coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 
 ```
 
+```{r}
+#rubric
+# The preregistered analyses reflect deep and critical thinking about the real-world application from which the data originates. The analyses are described in a way that persuades the reader that their results will be interesting, whether or not they turn out to be statistically significant.
+```
+
+
 # Hypothesis 1
 
-**Replace with your hypothesis.**
+**Younger people 18 - 25 prefer their coffee with lighter roasts. **
 
-Analysis: Replace with your analysis plan.
+Analysis: Run a linear (or logistic, if that fits better) regression where we input each age category as a discrete variable and output a prediction of the probability of preferring lighter roasts (refer to HW6 ex 2). We consider lighter roasts to be Light, Nordic, or Medium according to the roast_level column. The first age-group, which is the 18-25 age group, will be the reference variable, so we can see if the coefficents for the other age groups is not 0, so they factor into a lighter roast level preference.
+.
 
 # Hypothesis 2
 
