@@ -35,6 +35,6 @@ Analysis: Run a linear (or logistic, if that fits better) regression where we in
 
 # Hypothesis 2
 
-**Replace with your hypothesis.**
+**People who have higher levels of education are less likely to prefer their coffee with added sweetener. **
 
-Analysis: Replace with your analysis plan.
+Analysis: Run a linear regression where we input education level as a discrete variable and output a prediction of the probability of answering TRUE to the variables starting with sugar_sweetener_added. The first group "less than high school" degree will be used as the reference variable.
