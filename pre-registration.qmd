@@ -1,7 +1,23 @@
 ---
-title: "Project title"
+title: Brilliant Cassowary's Coffee Research
 subtitle: "Preregistration of analyses"
+author: 
+  - "Nidhi Soma (ns848)"
+  - "Joice Chen (jc3528)"
+  - "Jinpeng Li (jl3496)"
+  - "Stephen Syl-Akinwale (sis33)"
+editor: 
+  markdown: 
+    wrap: sentence
 ---
+
+
+
+# Inserting the dataset on Coffee
+```{r}
+coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
+
+```
 
 # Hypothesis 1
 
