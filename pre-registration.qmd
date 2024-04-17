@@ -20,12 +20,6 @@ coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 
 ```
 
-```{r}
-#rubric
-# The preregistered analyses reflect deep and critical thinking about the real-world application from which the data originates. The analyses are described in a way that persuades the reader that their results will be interesting, whether or not they turn out to be statistically significant.
-```
-
-
 # Hypothesis 1
 
 **Younger people 18 - 25 prefer their coffee with lighter roasts. **
