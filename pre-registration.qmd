@@ -12,14 +12,6 @@ editor:
 ---
 
 
-
-# Inserting the dataset on Coffee
-```{r}
-library(tidyverse)
-coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
-
-```
-
 # Hypothesis 1
 
 **Younger people 18 - 25 prefer their coffee with lighter roasts. **
