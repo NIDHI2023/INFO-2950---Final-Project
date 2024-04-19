@@ -36,6 +36,9 @@ Coffee D - Fermented, Natural, Fruity
 
 # Data analysis
 
+Addressing our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
+
+
 
 # Evaluation of significance
 
