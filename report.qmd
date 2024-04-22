@@ -1,9 +1,18 @@
 ---
 title: "Project title"
-subtitle: "Report"
+subtitle: "Brilliant Cassowary - Report"
+author:
+  - "Nidhi Soma (ns848)"
+  - "Joice Chen (jc3528)"
+  - "Jinpeng Li (jl3496)"
+  - "Stephen Syl-Akinwale (sis33)"
+echo: false
+#warning: false
+#message: false
 ---
 
 # Introduction
+One of the most widely known beverages in today's age is coffee. It is present in many different settings, ranging from students and employees to casual coffee shop frequenters and critical coffee enthusiasts.
 Our current research questions are:
 - How does self-perceived coffee experience affect actual and stated preferences?
 - How does coffee preference and consumption habits differ by demographic
@@ -11,24 +20,31 @@ attributes such as age, gender, education level, race, and political identity?
 
 # Data description
 *What are the observations (rows) and the attributes (columns)?*
+
 The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns.
 
 *Why was this dataset created?*
-To understand the general public's preferences as consumers for coffee.
+
+To understand the general public's preferences as consumers for coffee. Additionally, since Cometeer funded the creation of this dataset, they may be interested to know people's preferences in order to make their coffee capsules more appealing to a wider market.
 
 *Who funded the creation of the dataset?*
-James Hoffman and Cometeer.
+
+World champion barista James Hoffmann and Cometeer – a subscription service that makes flash-frozen coffee capsules.
 
 *What processes might have influenced what data was observed and recorded and what was not?*
+
 The survey quickly was sold out, and Hoffman's audience in general is coffee specialists. That will likely skew the population surveyed to be people who likely prefer specialty coffee, so it may be a biased sample. Additionally, this survey was conducted through people ordering tasting kits online, which were then sent to the participants to prepare and complete voluntarily, so there may have been differences in that. One example is that because participants were following a livestream to demonstrate how to do their taste test, their coffees may have been out long enough to have cooled, which could be another unaccounted variable that affected their taste preferences.
 
 *What preprocessing was done, and how did the data come to be in the form that you are using?*
+
 Zip codes and geographic data seemed to have been removed. Participants were anonymized to protect their privacy. It wasn't disclosed how Hoffmann and his team collected all the taste test results that participants filled out, but once they got that data, they made it into a spreadsheet to be shared with the public.
 
 *If people are involved, were they aware of the data collection and if so, what purpose did they expect the data to be used for?*
+
 People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
 
 *Notes*
+
 Coffee A - Light roast, Washed
 Coffee B - Medium Roast
 Coffee C - Dark roast
@@ -36,15 +52,48 @@ Coffee D - Fermented, Natural, Fruity
 
 # Data analysis
 
+```{r}
+#| label: loading packages
+library(tidyverse)
+library(tidymodels)
+```
+
 Addressing our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
 
+
+*Pre-registered hypotheses*
+
+Our first pre-registered hypothesis was that younger people 18 - 25 prefer their coffee with lighter roasts.
+```{r}
+# test <- coffee_clean_factors |>
+#   select(age, favorite_coffee_drink, favorite_coffee, best_described_before, like_coffee, roast_level, prefer_between_abc, prefer_between_ad, favorite_overall_coffee)
+
+  coffee_clean_factors |>
+  select(age, roast_level) |>
+  drop_na() |>
+  filter(age == "18-24 years old") |>
+  ggplot(aes(x = roast_level, fill = age)) +
+  geom_bar()
+```
+We see that there is a clear peak around the Light and Medium roast levels, suggesting that in this sample, younger people that are 18-24 years old have a strong preference for Light and Medium roast levels. However, there is more of a preference for Dark roasts than Nordic roasts, even though Nordic roasts are also generally considered to be lighter roasts.
+```{r}
+  young_roast_reg<-  coffee_clean_factors |>
+  select(age, roast_level) |>
+  drop_na() |>
+    mutate(roast_level_num = ifelse(roast_level == "Light" | roast_level == "Medium" | roast_level == "Nordic", 1, 0))
+  young_roast_reg
+  
+young_roast_fit <- linear_reg() |>
+fit(roast_level_num ~ age, data = young_roast_reg)
+tidy(young_roast_fit)
+```
 
 
 # Evaluation of significance
 
 
 # Interpretation and conclusions
-
+A possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
 
 # Limitations
 
