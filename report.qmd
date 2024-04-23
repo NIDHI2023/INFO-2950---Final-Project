@@ -357,19 +357,22 @@ p_value <- null_dist_roast %>%
 p_value
 ```
 
-Thus, if there were really no relationship between roast level preference and the age group of a person in America, our approximation of the probability that we would see a statistic as or more extreme than 15.98422 is approximately 0. 
-
-Difference in at least one of the age groups
-null would be mu 1 = mu 2 = mu3
-
-
-```{r}
-text_cols <- coffee_clean_factors |>
-  select(best_described_before, `coffee_a_-_notes`, `coffee_b_-_notes`, `coffee_c_-_notes`, `coffee_d_-_notes`, other_reason_for_drinking_coffee)
-```
-
 
 # Interpretation and conclusions
+
+
+*Research Question 1*
+
+
+
+
+
+
+*Research Question 2*
+
+
+
+*Conclusion*
 A possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
 
 # Limitations
