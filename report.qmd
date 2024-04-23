@@ -317,7 +317,24 @@ The observed statistic is 0.865-0.894 = -0.075.
 #   shade_p_value(obs_stat = d_hat, direction = "greater")
 ```
 
+
+
+
 # Interpretation and conclusions
+
+
+*Research Question 1*
+
+
+
+
+
+
+*Research Question 2*
+
+
+
+*Conclusion*
 A possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
 
 # Limitations
