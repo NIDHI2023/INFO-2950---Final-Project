@@ -43,6 +43,26 @@ Zip codes and geographic data seemed to have been removed. Participants were ano
 
 People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
 
+
+*Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?*
+
+*What data does each instance consist of?* 
+*Was there a specific gap that needed to be filled?* Please provide
+a description.
+
+*Are relationships between individual instances made explicit?*
+*Are there recommended data splits?*
+*Are there any errors, sources of noise, or redundancies in the dataset?*
+*Does the dataset contain data that might be considered confidential?*
+*Does the dataset identify any subpopulations (e.g., by age, gender)?*
+*Is it possible to identify individuals, either directly or indirectly from the dataset?*
+*Does the dataset contain data that might be considered sensitive in any way *
+*What mechanisms or procedures were used to collect the data?*
+*Were the individuals in question notified about the data collection?*
+*Was any preprocessing/cleaning/labeling of the data done *
+*Was the “raw” data saved in addition to the preprocessed/cleaned/labeled data*
+*Is there anything about the composition of the dataset or the way it was collected and leaned/labeled that might impact future uses? *
+
 *Notes*
 
 Coffee A - Light roast, Washed
@@ -362,7 +382,55 @@ p_value
 
 
 *Research Question 1*
+To answer the question how does coffee preference and consumption habits differ by demographic
+attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
 
+This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
+```{r}
+# Preference by Age
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
+
+age_roast_counts <- coffee_clean_factors |>
+  filter(!is.na(roast_level) & !is.na(age)) |>
+  group_by(age, roast_level) |>
+  summarise(count = n()) |>
+  left_join(roast_totals, by = "roast_level") |>
+  mutate(percentage = count / total * 100)
+
+ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Coffee Roast Level Preferences by Age Group",
+       x = "Roast Level",
+       y = "Percentage") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#Preferences by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
+coffee_clean_factors |>
+  select(gender, cups_of_coffee_per_day) |>
+  drop_na() |>
+  ggplot(aes(x = cups_of_coffee_per_day, fill = gender)) +
+  geom_bar(position= "stack")
+
+#Preferences by Employment per coffees per day
+coffee_clean_employ= coffee_clean|>
+  mutate(employment_status = ifelse(is.na(employment_status), "No disclosure", employment_status))
+ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_status)) +
+  geom_count() +
+  labs(title = "Correlation between Coffees per Day and Employment Status",
+       x = "Cups of Coffee per Day",
+       y = "Employment Status")
+
+#Prefrences by education level
+coffee_clean_factors |>
+  select(caffeine, education_level) |>
+  drop_na() |>
+  ggplot(aes(x = caffeine, fill = education_level)) +
+  geom_bar() +
+  labs(title = "Amount of caffeine in coffee by education level")
+```
 
 
 
