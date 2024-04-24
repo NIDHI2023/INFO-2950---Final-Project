@@ -50,25 +50,33 @@ Zip codes and geographic data seemed to have been removed. Participants were ano
 
 People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
 
-
-*Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?*
-
-*What data does each instance consist of?* 
 *Was there a specific gap that needed to be filled?* Please provide
 a description.
 
 *Are relationships between individual instances made explicit?*
+There are no explicit relationships between individual instances because the data provided is it's sole instance.
 *Are there recommended data splits?*
+No there are no recommended Data splits in this collection.
 *Are there any errors, sources of noise, or redundancies in the dataset?*
+There are instances of
 *Does the dataset contain data that might be considered confidential?*
+None
 *Does the dataset identify any subpopulations (e.g., by age, gender)?*
+Yes,the great America Coffee taste seprated entries into sub-populations at the discretion of the participant
 *Is it possible to identify individuals, either directly or indirectly from the dataset?*
+No the identity of each participant was anonymized.
 *Does the dataset contain data that might be considered sensitive in any way *
 *What mechanisms or procedures were used to collect the data?*
+Participants who participated  of the great American Coffee test recived an event kit includes four different coffees from four different roasters that will be chemically identical if used with distilled water at the same ratio.Participants will need a weighing scale, a way of heating hot water, and cups that can accommodate about 250 mLs or eight ounces.The event is only available in the US, but the organizers are interested in conducting similar events in other regions.
 *Were the individuals in question notified about the data collection?*
+The data was self reported and as a result consensual to each participant.
 *Was any preprocessing/cleaning/labeling of the data done *
+Yes data cleaning was done to make the variables and fields more readable and humanly understandably.
 *Was the “raw” data saved in addition to the preprocessed/cleaned/labeled data*
+Yes the raw data is stored in our repository and can still be accessed through this link publicly ( https://bit.ly/gacttCSV+)
 *Is there anything about the composition of the dataset or the way it was collected and leaned/labeled that might impact future uses? *
+The data was collected by individuals all over the US. There fore there may be inconsistencies with recording the data since there were no qualifications or standardized way of verifying results, except form participants practices.
+
 
 *Notes*
 
@@ -76,7 +84,7 @@ Coffee A - Light roast, Washed
 Coffee B - Medium Roast
 Coffee C - Dark roast
 Coffee D - Fermented, Natural, Fruity
-
+Detailed description on task and methods used to collect the data(https://www.youtube.com/watch?v=1fN_z4-EcOU)
 *Loading data*
 
 ```{r}
@@ -573,6 +581,7 @@ In the data analysis, a possible explanation for younger people showing more of 
 
 # Limitations
 
+Despite being such a wide variety of people this data is specific to the US and Isolate coffee experiences and prefrences common to the US only.
 
 # Acknowledgments
 
