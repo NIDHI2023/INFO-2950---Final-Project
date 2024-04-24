@@ -31,7 +31,7 @@ Research question(s). State your research question (s) clearly.
 
 -How does self-perceived coffee experience affect actual and stated preferences?
 - How does coffee preference and consumption habits differ by demographic
-attributes such as age, gender, education level, and political identity?
+attributes such as age, gender, education level, race, and political identity?
 - How does different coffee consumption habits, such as the type of sweetener
 added and the milk used, correlate with each other. 
 - How much do people's coffee consumption habits differ from each other?
@@ -211,30 +211,7 @@ coffee_clean_factors <- coffee_clean_factors |>
                                      "Somewhat strong",
                                      "Very strong")))
   
-           
-
-#glimpse(coffee_clean_factors)
-  # mutate(`what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?` = fct_relevel(
-  #   "Less than $2",
-  #   "$2-$4",
-  #   "$4-$6",
-  #   "$6-$8",
-  #   "$8-$10",
-  #   "$10-$15",
-  #   "$15-$20",
-  #   "More than $20"
-  # )) |>
-  #   mutate(`what_is_the_most_you'd_ever_be_willing_to_pay_for_a_cup_of_coffee?`) = fct_relevel(
-  #   "Less than $2",
-  #   "$2-$4",
-  #   "$4-$6",
-  #   "$6-$8",
-  #   "$8-$10",
-  #   "$10-$15",
-  #   "$15-$20",
-  #   "More than $20"
-  # )
-
+        
 
 ```
 
