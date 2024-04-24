@@ -11,12 +11,6 @@ warning: false
 message: false
 ---
 
-```{r}
-library(tidyverse)
-library(tidymodels)
-library(probably)
-library(skimr)
-```
 
 # Introduction
 One of the most widely known beverages in today's age is coffee. It is present in many different settings, ranging from students and employees to casual coffee shop frequenters and critical coffee enthusiasts.
@@ -97,6 +91,7 @@ library(stringr)
 library(ggplot2)
 library(usethis)
 library(tidymodels)
+library(probably)
 ```
 ```{r}
 #| label: loading-cleaned-data
@@ -253,9 +248,6 @@ coffee_clean_factors <- coffee_clean_factors |>
 
 # Data analysis
 
-We address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
-
-
 *Pre-registered hypotheses*
 
 Our first pre-registered hypothesis was that younger people 18 - 25 prefer their coffee with lighter roasts.
@@ -319,7 +311,7 @@ Each of the coefficients gives the proportion of people choosing lighter roasts 
 
 
 *Pre-registered Hypothesis 2*
-Our second pre-registered hypothesis is was that people with a bachelor's degree will higher would be more likely to add more types of sweeteners to their coffee as compared to those without a bachelor's degree
+Our second pre-registered hypothesis was that people who have higher levels of education are less likely to prefer their coffee with added sweetener. We can visualize this data to see if there seem to be any trends.
 
 ```{r}
 #| label: 2data-visualization
@@ -365,6 +357,10 @@ sweet_edu_df2 |>
 sweet_edu_df2 |>
   ggplot(aes(y = education_level), fill = add, color = "blue") +
   geom_bar()
+```
+These graphs show the distributions for each variable, so we can get an idea of the different groups we are working with. We see that granulated_sugar is the most popular sweetener, and people with higher than a Bachelor's degree are more common in this sample, which could potentially skew results. Next, we see how these two variables are related to each other through proportions, where we can more directly compare the visual differences.
+
+```{r}
 
 #sweetener preference proportions by education level
 sweet_edu_df2 |>
@@ -387,7 +383,7 @@ sweet_edu_df_analysis |>
 
 
 ```
-The visualizations seem to show little difference between the distribution of the number of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. We can conduct a hypothesis test to further test our hypothesis. We conduct a linear regression below
+The visualizations for the proportions seem to show little difference between the distribution of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. Instead of looking at the types of sweeteners, we can look at the number of sweeteners that a person uses. This can tell us about their taste preferences, and perhaps lead to insights for making a more appealing coffee to that market of users. Seeing the number of sweeteners a person adds gives an indication to their tolerance/preference for sweetness in their coffee. We can answer the question of how many sweeteners someone uses corresponding to education level through the logistic regression below.
 
 ```{r}
 #| label: log-reg
@@ -401,7 +397,62 @@ tidy(edu_sweetener_fit1)
 # tidy(edu_sweetener_fit)
 
 ```
-The logistical regression model calculated the coefficients representing the that a person with less than a Bachelor's degree would on average have 0.06 less probability to choose less sugar additive types than a person with a Bachelor's degree or higher would, holding all else constant.
+From the results of the logistical regression model, the negative coefficient for sweet_count reflects a lower probability for people with less than a Bachelor's degree choosing more sugar additive types than a person with a Bachelor's degree or higher would. 
+
+
+We now address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
+
+
+*Research Question 1*
+To answer the question how does coffee preference and consumption habits differ by demographic
+attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
+
+This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
+```{r}
+# Preference by Age
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
+
+age_roast_counts <- coffee_clean_factors |>
+  filter(!is.na(roast_level) & !is.na(age)) |>
+  group_by(age, roast_level) |>
+  summarise(count = n()) |>
+  left_join(roast_totals, by = "roast_level") |>
+  mutate(percentage = count / total * 100)
+
+ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Coffee Roast Level Preferences by Age Group",
+       x = "Roast Level",
+       y = "Percentage") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+
+#Preferences by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
+coffee_clean_factors |>
+  select(gender, cups_of_coffee_per_day) |>
+  drop_na() |>
+  ggplot(aes(x = cups_of_coffee_per_day, fill = gender)) +
+  geom_bar(position= "stack")
+
+#Preferences by Employment per coffees per day
+coffee_clean_employ= coffee_clean|>
+  mutate(employment_status = ifelse(is.na(employment_status), "No disclosure", employment_status))
+ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_status)) +
+  geom_count() +
+  labs(title = "Correlation between Coffees per Day and Employment Status",
+       x = "Cups of Coffee per Day",
+       y = "Employment Status")
+
+#Prefrences by education level
+coffee_clean_factors |>
+  select(caffeine, education_level) |>
+  drop_na() |>
+  ggplot(aes(x = caffeine, fill = education_level)) +
+  geom_bar() +
+  labs(title = "Amount of caffeine in coffee by education level")
+```
 
 # Evaluation of significance
 
@@ -461,72 +512,18 @@ p_value_independence
 
 *Hypothesis 2*
 
-We can investigate if the difference in accepted sugar additive types between education groups is statistically significant through a hypothesis test.
+To evaluate whether the number of types of sweetener accepted differ between people with different education degrees, we will conduct a two-side hypothesis test
 
 Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
 
 
-
-*Research Question 1*
-To answer the question how does coffee preference and consumption habits differ by demographic
-attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
-
-This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
-```{r}
-# Preference by Age
-roast_totals <- coffee_clean_factors |>
-  group_by(roast_level) |>
-  summarise(total = n())
-
-age_roast_counts <- coffee_clean_factors |>
-  filter(!is.na(roast_level) & !is.na(age)) |>
-  group_by(age, roast_level) |>
-  summarise(count = n()) |>
-  left_join(roast_totals, by = "roast_level") |>
-  mutate(percentage = count / total * 100)
-
-ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Coffee Roast Level Preferences by Age Group",
-       x = "Roast Level",
-       y = "Percentage") +
-  theme_minimal() +
-  scale_fill_viridis_d(end = 0.8)
-
-#Preferences by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
-coffee_clean_factors |>
-  select(gender, cups_of_coffee_per_day) |>
-  drop_na() |>
-  ggplot(aes(x = cups_of_coffee_per_day, fill = gender)) +
-  geom_bar(position= "stack")
-
-#Preferences by Employment per coffees per day
-coffee_clean_employ= coffee_clean|>
-  mutate(employment_status = ifelse(is.na(employment_status), "No disclosure", employment_status))
-ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_status)) +
-  geom_count() +
-  labs(title = "Correlation between Coffees per Day and Employment Status",
-       x = "Cups of Coffee per Day",
-       y = "Employment Status")
-
-#Prefrences by education level
-coffee_clean_factors |>
-  select(caffeine, education_level) |>
-  drop_na() |>
-  ggplot(aes(x = caffeine, fill = education_level)) +
-  geom_bar() +
-  labs(title = "Amount of caffeine in coffee by education level")
-```
-
-
 $$ H_0: \mu_{\text{bach}} - \mu_{\text{no bach}} = 0 $$
->>>>>>> 0c9016aeba96c5d2197892c2c679b8e26ebd27cb
+
+
+Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
 
 $$ H_a: \mu_{\text{bach}} - \mu_{\text{no bach}} \neq 0 $$
 
-To evaluate whether the number of types of sweetener accepted differ between people with different education degrees, we will conduct a two-side hypothesis test
-
-Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
 
 
 ```{r}
@@ -577,6 +574,9 @@ p_value
 From the evaluation of significance, using an alpha value of 0.05, because our p-value of approximately 0 is less than 0.05, we can reject the null hypothesis. There is sufficient evidence that there is an association between age group and preferring lighter roasts of coffee.
 
 In the data analysis, a possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
+
+*Hypothesis 2*
+
 
 
 # Limitations
