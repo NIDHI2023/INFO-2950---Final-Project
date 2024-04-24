@@ -11,6 +11,7 @@ warning: false
 message: false
 ---
 
+
 # Introduction
 One of the most widely known beverages in today's age is coffee. It is present in many different settings, ranging from students and employees to casual coffee shop frequenters and critical coffee enthusiasts.
 Our current research questions are:
@@ -52,6 +53,7 @@ Coffee D - Fermented, Natural, Fruity
 
 # Data analysis
 
+
 ```{r}
 #| label: loading packages
 library(tidyverse)
@@ -63,6 +65,7 @@ library(ggplot2)
 library(usethis)
 library(tidymodels)
 ```
+
 ```{r}
 #| label: loading-cleaned-data
 coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
@@ -216,12 +219,14 @@ coffee_clean_factors <- coffee_clean_factors |>
 
 ```
 
+
 Addressing our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
 
 
 *Pre-registered hypotheses*
 
 Our first pre-registered hypothesis was that younger people 18 - 25 prefer their coffee with lighter roasts.
+
 ```{r}
 #| label: visual-hyp-prefs
 # test <- coffee_clean_factors |>
@@ -243,9 +248,11 @@ Our first pre-registered hypothesis was that younger people 18 - 25 prefer their
     y = "Frequency"
   )
 ```
+
 We see that there is a clear peak around the Light and Medium roast levels, suggesting that in this sample, younger people that are 18-24 years old have a strong preference for Light and Medium roast levels. However, there is more of a preference for Dark roasts than Nordic roasts, even though Nordic roasts are also generally considered to be lighter roasts.
 
 This leads to the question of whether the younger age range of 18-24 is the most likely age to prefer lighter roast levels (Light, Medium, or Nordic). We investigate this below by first visualizing the preferences of all the age ranges, and then using a linear regression model. 
+
 ```{r}
 #| label: visual-all-prefs
 #| fig-width: 8
@@ -262,7 +269,9 @@ ggplot(coffee_clean_roast, aes(x = age, fill= roast_level)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
  scale_fill_viridis_d()
 ```
+
 In the future, exploring a logistic regression model may also lead to more accurate results, since the data when visualized doesn't appear to be very linear.
+
 ```{r}
 #| label: lin-reg-all-prefs
   young_roast_reg<-  coffee_clean_factors |>
@@ -276,6 +285,7 @@ tidy(young_roast_fit)
 
 # glance(young_roast_fit)$adj.r.squared
 ```
+
 Each of the coefficients gives the proportion of people choosing lighter roasts for the corresponding age group relative to the reference level of <18 years old. The reference level has a coefficient of 0, meaning its estimated proportion is the intercept, 0.842. Notably, the model predicts that people aged 18-24 years old will have a 0.029 lower proportion of people that prefer lighter roasts than people aged 25-34 years old, on average. So, the model predicts that younger people aged 18-24 are actually not the most likely group to prefer lighter roasts.
 
 for diff of props, the output is saying one group is % more probable than the other
@@ -291,6 +301,7 @@ topic modeling for text-analysis
 We can investigate if the difference in proportions of preferring a lighter roast between age groups is statistically significant or not with a chi-squared test of independence.
 
 
+
 ```{r}
 young_roast_binary <-young_roast_reg |>
   mutate(roast_level_binary = fct_collapse(
@@ -302,14 +313,16 @@ other_level = "Darker"))
     scale_fill_viridis_d()
 ```
 
+
 If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
 
 Null hypothesis: There is no association between age group and a lighter roast level preference.
 
 Alternative hypothesis: There is an association between age group and a lighter roast level preference.
 
+
 ```{r}
-#source: https://infer.netlify.app/articles/chi_squared
+#https://infer.netlify.app/articles/chi_squared
 # calculate the observed statistic
 observed_indep_statistic <- young_roast_binary %>%
   specify(roast_level_binary ~ age) %>%
@@ -339,6 +352,7 @@ p_value_independence
 ```
 
 
+
 # Interpretation and conclusions
 
 
@@ -362,4 +376,5 @@ In the data analysis, a possible explanation for younger people showing more of 
 
 
 # Acknowledgments
+
 
