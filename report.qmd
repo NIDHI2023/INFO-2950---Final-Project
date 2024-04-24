@@ -1,0 +1,520 @@
+---
+title: "Project title"
+subtitle: "Brilliant Cassowary - Report"
+author:
+  - "Nidhi Soma (ns848)"
+  - "Joice Chen (jc3528)"
+  - "Jinpeng Li (jl3496)"
+  - "Stephen Syl-Akinwale (sis33)"
+echo: false
+warning: false
+message: false
+---
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(probably)
+library(skimr)
+```
+
+# Introduction
+One of the most widely known beverages in today's age is coffee. It is present in many different settings, ranging from students and employees to casual coffee shop frequenters and critical coffee enthusiasts.
+Our current research questions are:
+- How does self-perceived coffee experience affect actual and stated preferences?
+- How does coffee preference and consumption habits differ by demographic
+attributes such as age, gender, education level, race, and political identity?
+
+# Data description
+*What are the observations (rows) and the attributes (columns)?*
+
+The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns.
+
+*Why was this dataset created?*
+
+To understand the general public's preferences as consumers for coffee. Additionally, since Cometeer funded the creation of this dataset, they may be interested to know people's preferences in order to make their coffee capsules more appealing to a wider market.
+
+*Who funded the creation of the dataset?*
+
+World champion barista James Hoffmann and Cometeer – a subscription service that makes flash-frozen coffee capsules.
+
+*What processes might have influenced what data was observed and recorded and what was not?*
+
+The survey quickly was sold out, and Hoffman's audience in general is coffee specialists. That will likely skew the population surveyed to be people who likely prefer specialty coffee, so it may be a biased sample. Additionally, this survey was conducted through people ordering tasting kits online, which were then sent to the participants to prepare and complete voluntarily, so there may have been differences in that. One example is that because participants were following a livestream to demonstrate how to do their taste test, their coffees may have been out long enough to have cooled, which could be another unaccounted variable that affected their taste preferences.
+
+*What preprocessing was done, and how did the data come to be in the form that you are using?*
+
+Zip codes and geographic data seemed to have been removed. Participants were anonymized to protect their privacy. It wasn't disclosed how Hoffmann and his team collected all the taste test results that participants filled out, but once they got that data, they made it into a spreadsheet to be shared with the public.
+
+*If people are involved, were they aware of the data collection and if so, what purpose did they expect the data to be used for?*
+
+People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
+
+*Notes*
+
+Coffee A - Light roast, Washed
+Coffee B - Medium Roast
+Coffee C - Dark roast
+Coffee D - Fermented, Natural, Fruity
+
+# Data analysis
+
+```{r}
+#| label: loading packages
+library(tidyverse)
+library(janitor)
+library(dplyr)
+library(skimr)
+library(stringr)
+library(ggplot2)
+library(usethis)
+library(tidymodels)
+```
+```{r}
+#| label: loading-cleaned-data
+coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
+
+#remove NA columns
+coffee_clean <- coffee_df |>
+  select(-contains("flavorings")) |>
+  select(-contains("Gender (please specify"))
+
+#remove repetitive questions
+coffee_clean <- coffee_clean |>
+  mutate(`Where do you typically drink coffee?` = NULL) |>
+  mutate(`How do you brew coffee at home?` = NULL)|>
+  mutate(`On the go, where do you typically purchase coffee?` = NULL) |>
+  mutate(`Do you usually add anything to your coffee?` = NULL) |>
+  mutate(`What kind of diary do you add?` = NULL) |>
+  mutate(`What kind of sugar or sweetener do you add?` = NULL) |>
+  mutate(`Why do you drink coffee?` = NULL)
+
+original_names <- colnames(coffee_clean)
+tidy_names <- gsub(" ", "_", original_names)
+tidy_names <- tolower(tidy_names)
+tidy_names <- gsub("[[:punct:]]&&[^_]", "", tidy_names)
+
+colnames(coffee_clean) <- tidy_names
+
+#renaming
+coffee_clean <- coffee_clean |>
+  rename(
+    age = "what_is_your_age?",
+    cups_of_coffee_per_day = "how_many_cups_of_coffee_do_you_typically_drink_per_day?",
+    how_else_at_home = "how_else_do_you_brew_coffee_at_home?",
+    where_else_purchase_coffee = "where_else_do_you_purchase_coffee?",
+    favorite_coffee_drink = "what_is_your_favorite_coffee_drink?",
+    favorite_coffee = "please_specify_what_your_favorite_coffee_drink_is", 
+    prefer_between_abc = "between_coffee_a,_coffee_b,_and_coffee_c_which_did_you_prefer?", 
+    other_flavoring = "what_other_flavoring_do_you_use?", 
+    best_described_before = "before_today's_tasting,_which_of_the_following_best_described_what_kind_of_coffee_you_like?", 
+    like_coffee = "how_strong_do_you_like_your_coffee?", 
+    roast_level = "what_roast_level_of_coffee_do_you_prefer?", 
+    caffeine = "how_much_caffeine_do_you_like_in_your_coffee?", 
+    own_coffee_expertise = "lastly,_how_would_you_rate_your_own_coffee_expertise?", 
+    prefer_between_ad = "between_coffee_a_and_coffee_d,_which_did_you_prefer?", 
+    favorite_overall_coffee = "lastly,_what_was_your_favorite_overall_coffee?", 
+    time_spent_on_equipment = "approximately_how_much_have_you_spent_on_coffee_equipment_in_the_past_5_years?", 
+    good_value_equipment = "do_you_feel_like_you’re_getting_good_value_for_your_money_with_regards_to_your_coffee_equipment?"
+  )
+
+colnames(coffee_clean) <- sapply(colnames(coffee_clean), function(name) {
+  if (grepl("where_do_you_typically_drink_coffee", name)) {
+    name <- gsub("where_do_you_typically_drink_coffee\\?_\\((.*)\\)", "drink_\\1", name)
+  } else if (grepl("how_do_you_brew_coffee_at_home", name)) {
+    name <- gsub("how_do_you_brew_coffee_at_home\\?_\\((.*)\\)", "at_home_\\1", name)
+  } else if (grepl("on_the_go,_where_do_you_typically_purchase_coffee", name)) {
+    name <- gsub("on_the_go,_where_do_you_typically_purchase_coffee\\?_\\((.*)\\)", "purchase_\\1", name)
+  } else if (grepl("do_you_usually_add_anything_to_your_coffee", name)) {
+    name <- gsub("do_you_usually_add_anything_to_your_coffee\\?_\\((.*)\\)", "add_to_\\1", name)
+  } else if (grepl("what_kind_of_dairy_do_you_add", name)) {
+    name <- gsub("what_kind_of_dairy_do_you_add\\?_\\((.*)\\)", "dairy_add_\\1", name)
+  } else if (grepl("what_kind_of_sugar_or_sweetener_do_you_add", name)) {
+    name <- gsub("what_kind_of_sugar_or_sweetener_do_you_add\\?_\\((.*)\\)", "sugar_sweetener_add_\\1", name)
+  } else if (grepl("why_do_you_drink_coffee", name)) {
+    name <- gsub("why_do_you_drink_coffee\\?_\\((.*)\\)", "reason_\\1", name)
+  }
+  name
+}
+)
+
+#manually changing some more confusing names
+coffee_clean_2 <- coffee_clean |>
+  rename(at_home_coffee_brewing_machine = `at_home_coffee_brewing_machine_(e.g._mr._coffee)`,
+         at_home_pod_or_capsule_machine = `at_home_pod/capsule_machine_(e.g._keurig/nespresso)`,
+         at_home_coffee_extract = `at_home_coffee_extract_(e.g._cometeer)`,
+         purchase_national_chain = `purchase_national_chain_(e.g._starbucks,_dunkin)`,
+         add_to_none = `add_to_no_-_just_black`,
+         add_to_milk = `add_to_milk,_dairy_alternative,_or_coffee_creamer`,
+         sugar_sweetener_add_artificial_sweeteners = `sugar_sweetener_add_artificial_sweeteners_(e.g.,_splenda)`,
+         sugar_sweetener_add_raw_sugar= `sugar_sweetener_add_raw_sugar_(turbinado)`,
+         where_work = `do_you_work_from_home_or_in_person?`,
+         monthly_coffee_cost = `in_total,_much_money_do_you_typically_spend_on_coffee_in_a_month?`,
+         like_taste = `do_you_like_the_taste_of_coffee?`,
+         know_where_coffee_from = `do_you_know_where_your_coffee_comes_from?`,
+         most_pay = `what_is_the_most_you've_ever_paid_for_a_cup_of_coffee?`,
+         most_willing_pay = `what_is_the_most_you'd_ever_be_willing_to_pay_for_a_cup_of_coffee?`,
+         good_value_money = `do_you_feel_like_you’re_getting_good_value_for_your_money_when_you_buy_coffee_at_a_cafe?`) |>
+  mutate(`what_kind_of_dairy_do_you_add?` = NULL)
+
+#change type to categorical
+
+coffee_clean_factors <- coffee_clean_2 |>
+  mutate(age = factor(age),
+         monthly_coffee_cost = factor(monthly_coffee_cost))|>
+  mutate(across(like_taste:political_affiliation, factor)) |>
+  mutate(across(like_coffee:caffeine, factor)) |>
+  mutate(cups_of_coffee_per_day = as_factor(cups_of_coffee_per_day))|>
+  mutate(best_described_before = factor(best_described_before))
+
+#add category
+coffee_clean_factors <- coffee_clean_factors |>
+  mutate(age = fct_relevel(age, c("<18 years old",
+                                  "18-24 years old",
+                                  "25-34 years old",
+                                  "35-44 years old", 
+                                  "45-54 years old",
+                                  "55-64 years old",
+                                  ">65 years old")))|>
+  mutate(monthly_coffee_cost = fct_relevel(monthly_coffee_cost, c(
+    "<$20",
+    "$20-$40",
+    "$40-$60",
+    "$60-$80",
+    "$80-$100",
+    ">$100"))) |>
+  mutate(most_pay = fct_relevel(
+    most_pay,
+    c("Less than $2",
+    "$2-$4",
+    "$4-$6",
+    "$6-$8",
+    "$8-$10",
+    "$10-$15",
+    "$15-$20",
+    "More than $20"
+   ))) |>
+  mutate(most_willing_pay = fct_relevel(
+    most_willing_pay,
+    c("Less than $2",
+    "$2-$4",
+    "$4-$6",
+    "$6-$8",
+    "$8-$10",
+    "$10-$15",
+    "$15-$20",
+    "More than $20"
+  ))) |>
+  mutate(cups_of_coffee_per_day = fct_relevel(cups_of_coffee_per_day,
+                                              c("Less than 1",
+                                              "1",
+                                              "2",
+                                              "3",
+                                              "4",
+                                              "More than 4"))) |>
+  mutate(caffeine = fct_relevel(caffeine,
+                                c("Decaf", "Half caff", "Full caffeine"))) |>
+  mutate(like_coffee = fct_relevel(like_coffee,
+                                   c("Weak",
+                                     "Somewhat light",
+                                     "Medium",
+                                     "Somewhat strong",
+                                     "Very strong")))
+
+```
+
+Addressing our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
+
+
+*Pre-registered hypotheses*
+
+Our first pre-registered hypothesis was that younger people 18 - 25 prefer their coffee with lighter roasts.
+```{r}
+#| label: visual-hyp-prefs
+# test <- coffee_clean_factors |>
+#   select(age, favorite_coffee_drink, favorite_coffee, best_described_before, like_coffee, roast_level, prefer_between_abc, prefer_between_ad, favorite_overall_coffee)
+
+  coffee_clean_factors |>
+  select(age, roast_level) |>
+  drop_na() |>
+  filter(age == "18-24 years old") |>
+  ggplot(aes(x = roast_level, fill = age)) +
+  geom_bar() +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(
+    title = "Roast Level Preferences",
+    subtitle = "For respondents aged 18-24 only",
+    x= "Roast level",
+    y = "Frequency"
+  )
+```
+We see that there is a clear peak around the Light and Medium roast levels, suggesting that in this sample, younger people that are 18-24 years old have a strong preference for Light and Medium roast levels. However, there is more of a preference for Dark roasts than Nordic roasts, even though Nordic roasts are also generally considered to be lighter roasts.
+
+This leads to the question of whether the younger age range of 18-24 is the most likely age to prefer lighter roast levels (Light, Medium, or Nordic). We investigate this below by first visualizing the preferences of all the age ranges, and then using a linear regression model.
+```{r}
+#| label: visual-all-prefs
+#| fig-width: 8
+#| fig-height: 6
+coffee_clean_roast <- coffee_clean %>%
+  mutate(roast_level = ifelse(is.na(roast_level), "No Preference", roast_level))
+
+ggplot(coffee_clean_roast, aes(x = roast_level, fill= age)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Preferred Coffee Roast Levels",
+       x = "Roast Level",
+       y = "Frequency",
+       fill= "Age groups per Roast preference") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ scale_fill_viridis_d()
+```
+
+```{r}
+#| label: lin-reg-all-prefs
+  young_roast_reg<-  coffee_clean_factors |>
+  select(age, roast_level) |>
+  drop_na() |>
+    mutate(roast_level_num = ifelse(roast_level == "Light" | roast_level == "Medium" | roast_level == "Nordic", 1, 0))
+
+# count_light_roast <- function() {
+#   coffee_clean_factors |>
+#     select(age,roast_level) |>
+#     drop_na() |>
+#     filter(roast_level == "Light" | roast_level == "Medium" | roast_level == "Nordic") |>
+#     count()
+# }
+
+young_roast_reg2 <- young_roast_reg |>
+  group_by(age) |>
+  summarize(prop_light = mean(roast_level_num))
+
+young_roast_reg2
+  
+young_roast_fit <- linear_reg() |>
+fit(roast_level_num ~ age, data = young_roast_reg)
+tidy(young_roast_fit)
+```
+Each of the coefficients gives the incremental probability (PROPORTION) of choosing lighter roasts for the corresponding age group relative to the reference level of <18 years old. The reference level has a coefficient of 0, meaning its estimated probability is the intercept, 0.842. Notably, the model predicts that people aged 18-24 years old will have a 0.029 lower probability of preferring lighter roasts than people aged 25-34 years old, on average. So, the model predicts that younger people aged 18-24 are actually not the most likely group to prefer lighter roasts.
+
+for diff of props, the output is saying one group is % more probable than the other
+can do a few tests, just explain why
+options: prop test, chi sq tests, g tests, diff of props 3 times
+
+topic modeling for text-analysis
+
+# Evaluation of significance
+
+*Hypothesis 1*
+
+We can investigate if the difference in probabilities of preferring a lighter roast between age groups is statistically significant or not with a hypothesis test.
+
+Null hypothesis: The true proportion of preferring a lighter roast is the same between people in America aged 18-24 and people in America aged 25-34.
+
+$$H_0: p_{\text{18-24}} - p_{\text{25-34}} = 0$$
+Because we are interested in seeing if younger people are more likely to prefer lighter roasts than other age groups, we can conduct a one sided hypothesis test.
+
+Alternative hypothesis: The true average probability of preferring a lighter roast for people in America aged 18-24 is higher than people in America aged 25-34.
+$$H_a: p_{\text{18-24}} - p_{\text{25-34}} > 0$$
+```{r}
+#| label: sample-statistics
+young_roast_reg |>
+  group_by(age) |>
+  filter(age == "18-24 years old" | age == "25-34 years old")|>
+   summarize(u_hat = mean(roast_level_num))
+```
+The observed statistic is 0.865-0.894 = -0.075.
+
+```{r}
+#source: https://infer.tidymodels.org/articles/anova.html
+# null_dist_roast <- young_roast_reg |>
+#   # specify the response and explanatory variable
+#   specify(roast_level_num ~ age, explanatory = age) |>
+#   # declare the null hypothesis
+#   hypothesize(null = "independence") |>
+#   # simulate the null distribution
+#   generate(reps = 1000, type = "permute") |>
+#   # calculate the difference in means for each permutation
+#   calculate(stat = "diff in means", order = c("18-24 years old", "25-34 years old"))
+
+# calculate the observed statistic
+observed_f_statistic <- young_roast_reg %>%
+  specify(roast_level_num ~ age) %>%
+  hypothesize(null = "independence") %>%
+  calculate(stat = "diff in props")
+
+# generate the null distribution using randomization
+null_dist_roast <- young_roast_reg %>%
+  specify(roast_level_num ~ age) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in props")
+
+# visualize the null distribution and test statistic!
+null_dist_roast %>%
+  visualize() + 
+  shade_p_value(observed_f_statistic,
+                direction = "greater")
+
+# calculate the p value from the observed statistic and null distribution
+p_value <- null_dist_roast %>%
+  get_p_value(obs_stat = observed_f_statistic,
+              direction = "greater")
+
+p_value
+```
+*Conclusion*
+A possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
+
+
+
+
+
+*Pre-registered Hypothesis 2*
+Our second pre-registered hypothesis is was that people with a bachelor's degree will higher would be more likely to add more types of sweeteners to their coffee as compared to those without a bachelor's degree
+
+```{r}
+#| label: 2data-visualization
+#clean original dataset
+sweet_edu_df <- coffee_clean_factors |>
+  select(education_level, contains("sugar_sweetener_add")) |>
+  drop_na()
+names(sweet_edu_df) <- gsub("sugar_sweetener_add_", "", names(sweet_edu_df))
+sweet_edu_df <- sweet_edu_df |> 
+  mutate(education_level = case_when(
+    education_level %in% c("Bachelor's degree", "Master's degree", "Doctorate or professional degree") ~ "bachelor",
+    TRUE ~ "no_bachelor"
+  )) |>
+  mutate(education_level = factor(education_level,
+                                  c("bachelor",
+                                    "no_bachelor")))
+
+#data set for analysis, with number of sugar types
+sweet_edu_df_analysis <- sweet_edu_df |>
+  rowwise() |>
+  mutate(sweet_count = sum(across(granulated_sugar:raw_sugar), na.rm = TRUE))
+
+#other dataset for visualization purposes
+sweet_edu_df2 <- sweet_edu_df |>
+  pivot_longer(
+    cols = 2:9,
+    names_to = "sweetener",
+    values_to = "add"
+  ) 
+
+sweet_edu_df3 <- sweet_edu_df2 |>
+  select(education_level, sweetener, add)|>
+  filter(add == TRUE)
+
+sweet_edu_df <- sweet_edu_df
+  
+#Popularity of sweeteners
+sweet_edu_df2 |>
+  ggplot(aes(y = sweetener, fill = add) ) +
+  geom_bar()
+
+#number of added sweeteners by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = education_level), fill = add, color = "blue") +
+  geom_bar()
+
+#sweetener preference proportions by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = sweetener, fill = add) ) +
+  geom_bar(position = "fill") +
+  facet_wrap(.~education_level)
+
+#proportion preferring sweetener by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = education_level, fill = add) ) +
+  geom_bar(position = "fill") +
+  facet_wrap(.~sweetener)
+
+#number of sugar type by education
+sweet_edu_df_analysis |>
+  ggplot(aes(x = sweet_count, fill = education_level)) +
+  geom_bar(position = "dodge")
+
+
+
+
+```
+The visualizations seem to show little difference between the distribution of the number of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. We can conduct a hypothesis test to further test our hypothesis. We conduct a linear regression below
+
+```{r}
+#| label: lin-reg-all-prefs
+edu_sweetener_fit1 <- logistic_reg() |>
+  fit(education_level ~ sweet_count, data = sweet_edu_df_analysis)
+tidy(edu_sweetener_fit1)
+
+
+# edu_sweetener_fit2 <- logistic_reg() |>
+#   fit(education_level ~ granulated_sugar, data = sweet_edu_df)
+# tidy(edu_sweetener_fit)
+
+```
+The logistical regression model calculated the coefficients representing the that a person with less than a Bachelor's degree would on average have 0.06 less probability to choose less sugar additive types than a person with a Bachelor's degree or higher would.
+
+# Evaluation of significance
+
+*Hypothesis 1*
+
+We can investigate if the difference in accepted sugar additive types between education groups is statistically significant through a hypothesis test.
+
+Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
+
+$$H_0: p_{\text{bach}} - p_{\text{no_bach}} = 0$$
+To evaluate whether the number of types of sweetener accepted differ between people with different education degrees, we will conduct a two-side hypothesis test
+
+Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
+$$H_a: p_{\text{bach}} - p_{\text{no_bach}} != 0$$
+```{r}
+#| label: 2sample-statistics
+sweet_edu_df_analysis |>
+  group_by(education_level) |>
+   summarize(mean = mean(sweet_count))
+```
+The observed statistic is 1.455-1.408 = 0.047
+
+```{r}
+#Hypothesis testing
+
+ob_sweet <- sweet_edu_df_analysis |>
+  specify(response = sweet_count, explanatory = education_level) |>
+  hypothesize(null = "independence") |>
+  calculate(stat = "diff in means")
+
+# null distribution
+null_dist_sweet <- sweet_edu_df_analysis |>
+  specify(response = sweet_count, explanatory = education_level) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "diff in means")
+
+# visualize the null distribution and test statistic
+null_dist_sweet |>
+  visualize() + 
+  shade_p_value(ob_mean,
+                direction = "greater")
+
+# calculate the p value from the observed statistic and null distribution
+p_value <- null_dist_sweet |>
+  get_p_value(obs_stat = ob_sweet,
+              direction = "greater")
+
+p_value
+```
+
+
+*Research Question 2*
+
+
+
+# Interpretation and conclusions
+
+
+# Limitations
+
+
+# Acknowledgments
+
