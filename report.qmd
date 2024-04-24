@@ -289,62 +289,6 @@ tidy(young_roast_fit)
 ```
 Each of the coefficients gives the proportion of people choosing lighter roasts for the corresponding age group relative to the reference level of <18 years old. The reference level has a coefficient of 0, meaning its estimated proportion is the intercept, 0.842. Notably, the model predicts that people aged 18-24 years old will have a 0.029 lower proportion of people that prefer lighter roasts than people aged 25-34 years old, on average. So, the model predicts that younger people aged 18-24 are actually not the most likely group to prefer lighter roasts.
 
-# Evaluation of significance
-
-*Pre-registered Hypothesis 1*
-
-We can investigate if the difference in proportions of preferring a lighter roast between age groups is statistically significant or not with a chi-squared test of independence.
-
-
-```{r}
-#| label: show-independence-relationship
-young_roast_binary <-young_roast_reg |>
-  mutate(roast_level_binary = fct_collapse(
-.f = roast_level,
-Lighter = c("Light", "Medium", "Nordic"),
-other_level = "Darker"))
-  ggplot(young_roast_binary, mapping = aes(x = age, fill = roast_level_binary)) +
-  geom_bar(position = "fill") +
-    scale_fill_viridis_d()
-```
-
-If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
-
-Null hypothesis: There is no association between age group and a lighter roast level preference.
-
-Alternative hypothesis: There is an association between age group and a lighter roast level preference.
-
-```{r}
-#| label: chi-sqr-test
-#source: https://infer.netlify.app/articles/chi_squared
-# calculate the observed statistic
-observed_indep_statistic <- young_roast_binary %>%
-  specify(roast_level_binary ~ age) %>%
-  hypothesize(null = "independence") %>%
-  calculate(stat = "Chisq")
-
-# generate the null distribution using randomization
-null_dist_roast <- young_roast_binary %>%
-  specify(roast_level_binary ~ age) %>%
-  hypothesize(null = "independence") %>%
-  generate(reps = 5000, type = "permute") %>%
-  calculate(stat = "Chisq")
-
-# visualize the null distribution and test statistic!
-null_dist_roast %>%
-  visualize() + 
-  shade_p_value(observed_indep_statistic,
-                direction = "greater")
-
-# calculate the p value from the observed statistic and null distribution
-p_value_independence <- null_dist_roast %>%
-  get_p_value(obs_stat = observed_indep_statistic,
-              direction = "greater")
-
-p_value_independence
-
-```
-
 
 *Pre-registered Hypothesis 2*
 Our second pre-registered hypothesis is was that people with a bachelor's degree will higher would be more likely to add more types of sweeteners to their coffee as compared to those without a bachelor's degree
@@ -433,7 +377,61 @@ The logistical regression model calculated the coefficients representing the tha
 
 # Evaluation of significance
 
-*Hypothesis 1*
+*Pre-registered Hypothesis 1*
+
+We can investigate if the difference in proportions of preferring a lighter roast between age groups is statistically significant or not with a chi-squared test of independence.
+
+
+```{r}
+#| label: show-independence-relationship
+young_roast_binary <-young_roast_reg |>
+  mutate(roast_level_binary = fct_collapse(
+.f = roast_level,
+Lighter = c("Light", "Medium", "Nordic"),
+other_level = "Darker"))
+  ggplot(young_roast_binary, mapping = aes(x = age, fill = roast_level_binary)) +
+  geom_bar(position = "fill") +
+    scale_fill_viridis_d()
+```
+
+If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
+
+Null hypothesis: There is no association between age group and a lighter roast level preference.
+
+Alternative hypothesis: There is an association between age group and a lighter roast level preference.
+
+```{r}
+#| label: chi-sqr-test
+#source: https://infer.netlify.app/articles/chi_squared
+# calculate the observed statistic
+observed_indep_statistic <- young_roast_binary %>%
+  specify(roast_level_binary ~ age) %>%
+  hypothesize(null = "independence") %>%
+  calculate(stat = "Chisq")
+
+# generate the null distribution using randomization
+null_dist_roast <- young_roast_binary %>%
+  specify(roast_level_binary ~ age) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 5000, type = "permute") %>%
+  calculate(stat = "Chisq")
+
+# visualize the null distribution and test statistic!
+null_dist_roast %>%
+  visualize() + 
+  shade_p_value(observed_indep_statistic,
+                direction = "greater")
+
+# calculate the p value from the observed statistic and null distribution
+p_value_independence <- null_dist_roast %>%
+  get_p_value(obs_stat = observed_indep_statistic,
+              direction = "greater")
+
+p_value_independence
+
+```
+
+*Hypothesis 2*
 
 We can investigate if the difference in accepted sugar additive types between education groups is statistically significant through a hypothesis test.
 
