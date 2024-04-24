@@ -11,6 +11,13 @@ warning: false
 message: false
 ---
 
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(probably)
+library(skimr)
+```
+
 # Introduction
 One of the most widely known beverages in today's age is coffee. It is present in many different settings, ranging from students and employees to casual coffee shop frequenters and critical coffee enthusiasts.
 Our current research questions are:
@@ -70,7 +77,7 @@ Coffee B - Medium Roast
 Coffee C - Dark roast
 Coffee D - Fermented, Natural, Fruity
 
-# Data analysis
+*Loading data*
 
 ```{r}
 #| label: loading packages
@@ -236,7 +243,9 @@ coffee_clean_factors <- coffee_clean_factors |>
 
 ```
 
-Addressing our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
+# Data analysis
+
+We address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
 
 
 *Pre-registered hypotheses*
@@ -265,7 +274,7 @@ Our first pre-registered hypothesis was that younger people 18 - 25 prefer their
 ```
 We see that there is a clear peak around the Light and Medium roast levels, suggesting that in this sample, younger people that are 18-24 years old have a strong preference for Light and Medium roast levels. However, there is more of a preference for Dark roasts than Nordic roasts, even though Nordic roasts are also generally considered to be lighter roasts.
 
-This leads to the question of whether the younger age range of 18-24 is the most likely age to prefer lighter roast levels (Light, Medium, or Nordic). We investigate this below by first visualizing the preferences of all the age ranges, and then using a linear regression model.
+This leads to the question of whether the younger age range of 18-24 is the most likely age to prefer lighter roast levels (Light, Medium, or Nordic). We investigate this below by first visualizing the preferences of all the age ranges, and then using a linear regression model. 
 ```{r}
 #| label: visual-all-prefs
 #| fig-width: 8
@@ -273,112 +282,181 @@ This leads to the question of whether the younger age range of 18-24 is the most
 coffee_clean_roast <- coffee_clean %>%
   mutate(roast_level = ifelse(is.na(roast_level), "No Preference", roast_level))
 
-ggplot(coffee_clean_roast, aes(x = roast_level, fill= age)) +
+ggplot(coffee_clean_roast, aes(x = age, fill= roast_level)) +
   geom_bar(position = "dodge") +
   labs(title = "Preferred Coffee Roast Levels",
-       x = "Roast Level",
+       x = "Age Group",
        y = "Frequency",
-       fill= "Age groups per Roast preference") +
+       fill= "Roast preference") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
  scale_fill_viridis_d()
 ```
-
+In the future, exploring a logistic regression model may also lead to more accurate results, since the data when visualized doesn't appear to be very linear.
 ```{r}
 #| label: lin-reg-all-prefs
   young_roast_reg<-  coffee_clean_factors |>
   select(age, roast_level) |>
   drop_na() |>
     mutate(roast_level_num = ifelse(roast_level == "Light" | roast_level == "Medium" | roast_level == "Nordic", 1, 0))
-
-# count_light_roast <- function() {
-#   coffee_clean_factors |>
-#     select(age,roast_level) |>
-#     drop_na() |>
-#     filter(roast_level == "Light" | roast_level == "Medium" | roast_level == "Nordic") |>
-#     count()
-# }
-
-young_roast_reg2 <- young_roast_reg |>
-  group_by(age) |>
-  summarize(prop_light = mean(roast_level_num))
-
-young_roast_reg2
   
 young_roast_fit <- linear_reg() |>
 fit(roast_level_num ~ age, data = young_roast_reg)
 tidy(young_roast_fit)
+
+# glance(young_roast_fit)$adj.r.squared
+#for diff of props, the output is saying one group is % more probable than the other
+#topic modeling for text-analysis?
 ```
-Each of the coefficients gives the incremental probability (PROPORTION) of choosing lighter roasts for the corresponding age group relative to the reference level of <18 years old. The reference level has a coefficient of 0, meaning its estimated probability is the intercept, 0.842. Notably, the model predicts that people aged 18-24 years old will have a 0.029 lower probability of preferring lighter roasts than people aged 25-34 years old, on average. So, the model predicts that younger people aged 18-24 are actually not the most likely group to prefer lighter roasts.
+Each of the coefficients gives the proportion of people choosing lighter roasts for the corresponding age group relative to the reference level of <18 years old. The reference level has a coefficient of 0, meaning its estimated proportion is the intercept, 0.842. Notably, the model predicts that people aged 18-24 years old will have a 0.029 lower proportion of people that prefer lighter roasts than people aged 25-34 years old, on average. So, the model predicts that younger people aged 18-24 are actually not the most likely group to prefer lighter roasts.
 
-for diff of props, the output is saying one group is % more probable than the other
-can do a few tests, just explain why
-options: prop test, chi sq tests, g tests, diff of props 3 times
 
-topic modeling for text-analysis
+*Pre-registered Hypothesis 2*
+Our second pre-registered hypothesis is was that people with a bachelor's degree will higher would be more likely to add more types of sweeteners to their coffee as compared to those without a bachelor's degree
+
+```{r}
+#| label: 2data-visualization
+#clean original dataset
+sweet_edu_df <- coffee_clean_factors |>
+  select(education_level, contains("sugar_sweetener_add")) |>
+  drop_na()
+names(sweet_edu_df) <- gsub("sugar_sweetener_add_", "", names(sweet_edu_df))
+sweet_edu_df <- sweet_edu_df |> 
+  mutate(education_level = case_when(
+    education_level %in% c("Bachelor's degree", "Master's degree", "Doctorate or professional degree") ~ "bachelor",
+    TRUE ~ "no_bachelor"
+  )) |>
+  mutate(education_level = factor(education_level,
+                                  c("bachelor",
+                                    "no_bachelor")))
+
+#data set for analysis, with number of sugar types
+sweet_edu_df_analysis <- sweet_edu_df |>
+  rowwise() |>
+  mutate(sweet_count = sum(across(granulated_sugar:raw_sugar), na.rm = TRUE))
+
+#other dataset for visualization purposes
+sweet_edu_df2 <- sweet_edu_df |>
+  pivot_longer(
+    cols = 2:9,
+    names_to = "sweetener",
+    values_to = "add"
+  ) 
+
+sweet_edu_df3 <- sweet_edu_df2 |>
+  select(education_level, sweetener, add)|>
+  filter(add == TRUE)
+
+sweet_edu_df <- sweet_edu_df
+  
+#Popularity of sweeteners
+sweet_edu_df2 |>
+  ggplot(aes(y = sweetener, fill = add) ) +
+  geom_bar()
+
+#number of added sweeteners by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = education_level), fill = add, color = "blue") +
+  geom_bar()
+
+#sweetener preference proportions by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = sweetener, fill = add) ) +
+  geom_bar(position = "fill") +
+  facet_wrap(.~education_level)
+
+#proportion preferring sweetener by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = education_level, fill = add) ) +
+  geom_bar(position = "fill") +
+  facet_wrap(.~sweetener)
+
+#number of sugar type by education
+sweet_edu_df_analysis |>
+  ggplot(aes(x = sweet_count, fill = education_level)) +
+  geom_bar(position = "dodge")
+
+
+
+
+```
+The visualizations seem to show little difference between the distribution of the number of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. We can conduct a hypothesis test to further test our hypothesis. We conduct a linear regression below
+
+```{r}
+#| label: log-reg
+edu_sweetener_fit1 <- logistic_reg() |>
+  fit(education_level ~ sweet_count, data = sweet_edu_df_analysis)
+tidy(edu_sweetener_fit1)
+
+
+# edu_sweetener_fit2 <- logistic_reg() |>
+#   fit(education_level ~ granulated_sugar, data = sweet_edu_df)
+# tidy(edu_sweetener_fit)
+
+```
+The logistical regression model calculated the coefficients representing the that a person with less than a Bachelor's degree would on average have 0.06 less probability to choose less sugar additive types than a person with a Bachelor's degree or higher would, holding all else constant.
 
 # Evaluation of significance
 
-*Hypothesis 1*
+*Pre-registered Hypothesis 1*
 
-We can investigate if the difference in probabilities of preferring a lighter roast between age groups is statistically significant or not with a hypothesis test.
+We can investigate if the difference in proportions of preferring a lighter roast between age groups is statistically significant or not with a chi-squared test of independence.
 
-Null hypothesis: The true proportion of preferring a lighter roast is the same between people in America aged 18-24 and people in America aged 25-34.
 
-$$H_0: p_{\text{18-24}} - p_{\text{25-34}} = 0$$
-Because we are interested in seeing if younger people are more likely to prefer lighter roasts than other age groups, we can conduct a one sided hypothesis test.
-
-Alternative hypothesis: The true average probability of preferring a lighter roast for people in America aged 18-24 is higher than people in America aged 25-34.
-$$H_a: p_{\text{18-24}} - p_{\text{25-34}} > 0$$
 ```{r}
-#| label: sample-statistics
-young_roast_reg |>
-  group_by(age) |>
-  filter(age == "18-24 years old" | age == "25-34 years old")|>
-   summarize(u_hat = mean(roast_level_num))
+#| label: show-independence-relationship
+young_roast_binary <-young_roast_reg |>
+  mutate(roast_level_binary = fct_collapse(
+.f = roast_level,
+Lighter = c("Light", "Medium", "Nordic"),
+other_level = "Darker"))
+  ggplot(young_roast_binary, mapping = aes(x = age, fill = roast_level_binary)) +
+  geom_bar(position = "fill") +
+    scale_fill_viridis_d()
 ```
-The observed statistic is 0.865-0.894 = -0.075.
+
+If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
+
+Null hypothesis: There is no association between age group and a lighter roast level preference.
+
+Alternative hypothesis: There is an association between age group and a lighter roast level preference.
 
 ```{r}
-#source: https://infer.tidymodels.org/articles/anova.html
-# null_dist_roast <- young_roast_reg |>
-#   # specify the response and explanatory variable
-#   specify(roast_level_num ~ age, explanatory = age) |>
-#   # declare the null hypothesis
-#   hypothesize(null = "independence") |>
-#   # simulate the null distribution
-#   generate(reps = 1000, type = "permute") |>
-#   # calculate the difference in means for each permutation
-#   calculate(stat = "diff in means", order = c("18-24 years old", "25-34 years old"))
-
+#| label: chi-sqr-test
+#source: https://infer.netlify.app/articles/chi_squared
 # calculate the observed statistic
-observed_f_statistic <- young_roast_reg %>%
-  specify(roast_level_num ~ age) %>%
+observed_indep_statistic <- young_roast_binary %>%
+  specify(roast_level_binary ~ age) %>%
   hypothesize(null = "independence") %>%
-  calculate(stat = "diff in props")
+  calculate(stat = "Chisq")
 
 # generate the null distribution using randomization
-null_dist_roast <- young_roast_reg %>%
-  specify(roast_level_num ~ age) %>%
+null_dist_roast <- young_roast_binary %>%
+  specify(roast_level_binary ~ age) %>%
   hypothesize(null = "independence") %>%
-  generate(reps = 1000, type = "permute") %>%
-  calculate(stat = "diff in props")
+  generate(reps = 5000, type = "permute") %>%
+  calculate(stat = "Chisq")
 
 # visualize the null distribution and test statistic!
 null_dist_roast %>%
   visualize() + 
-  shade_p_value(observed_f_statistic,
+  shade_p_value(observed_indep_statistic,
                 direction = "greater")
 
 # calculate the p value from the observed statistic and null distribution
-p_value <- null_dist_roast %>%
-  get_p_value(obs_stat = observed_f_statistic,
+p_value_independence <- null_dist_roast %>%
+  get_p_value(obs_stat = observed_indep_statistic,
               direction = "greater")
 
-p_value
+p_value_independence
+
 ```
 
+*Hypothesis 2*
 
-# Interpretation and conclusions
+We can investigate if the difference in accepted sugar additive types between education groups is statistically significant through a hypothesis test.
+
+Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
+
 
 
 *Research Question 1*
@@ -433,15 +511,65 @@ coffee_clean_factors |>
 ```
 
 
+$$ H_0: \mu_{\text{bach}} - \mu_{\text{no bach}} = 0 $$
+>>>>>>> 0c9016aeba96c5d2197892c2c679b8e26ebd27cb
 
+$$ H_a: \mu_{\text{bach}} - \mu_{\text{no bach}} \neq 0 $$
+
+To evaluate whether the number of types of sweetener accepted differ between people with different education degrees, we will conduct a two-side hypothesis test
+
+Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
+
+
+```{r}
+#| label: 2sample-statistics
+sweet_edu_df_analysis |>
+  group_by(education_level) |>
+   summarize(mean = mean(sweet_count))
+```
+The observed statistic is 1.455-1.408 = 0.047
+
+```{r}
+#Hypothesis testing
+
+ob_sweet <- sweet_edu_df_analysis |>
+  specify(response = sweet_count, explanatory = education_level) |>
+  hypothesize(null = "independence") |>
+  calculate(stat = "diff in means")
+
+# null distribution
+null_dist_sweet <- sweet_edu_df_analysis |>
+  specify(response = sweet_count, explanatory = education_level) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "diff in means")
+
+# visualize the null distribution and test statistic
+null_dist_sweet |>
+  visualize() + 
+  shade_p_value(ob_sweet,
+                direction = "greater")
+
+# calculate the p value from the observed statistic and null distribution
+p_value <- null_dist_sweet |>
+  get_p_value(obs_stat = ob_sweet,
+              direction = "greater")
+
+p_value
+```
 
 
 *Research Question 2*
 
 
 
-*Conclusion*
-A possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
+# Interpretation and conclusions
+
+*Hypothesis 1*
+From the evaluation of significance, using an alpha value of 0.05, because our p-value of approximately 0 is less than 0.05, we can reject the null hypothesis. There is sufficient evidence that there is an association between age group and preferring lighter roasts of coffee.
+
+In the data analysis, a possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
+
 
 # Limitations
 
