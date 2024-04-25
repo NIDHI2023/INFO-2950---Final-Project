@@ -1,6 +1,6 @@
 ---
-title: "Project title"
-subtitle: "Brilliant Cassowary - Report"
+title: "Coffee Preferences"
+subtitle: "Brilliant Cassowary - Report Draft"
 author:
   - "Nidhi Soma (ns848)"
   - "Joice Chen (jc3528)"
