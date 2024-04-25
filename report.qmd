@@ -454,12 +454,48 @@ coffee_clean_factors |>
   labs(title = "Amount of caffeine in coffee by education level")
 ```
 
+#Hypothesis Test: Coffee Consumption by Gender
+Research Focus: To assess whether there's a significant difference in the number of cups of coffee consumed per day across different genders.
+
+Null Hypothesis (H0): Male and Female consume the same average number of cups of coffee per day.
+
+$$ H_0: \mu_{\text{Male}} - \mu_{\text{Female}} = 0 $$
+
+Alternative Hypothesis (Ha): There is a difference in the average number of cups of coffee consumed per day between Male and Female.
+$$ H_0: \mu_{\text{Male}} - \mu_{\text{Female}} \neq 0 $$
+We'll proceed with an independent two-sample t-test to compare the average number of cups of coffee consumed per day between male and female groups.
+
+```{r}
+library(dplyr)
+# Convert 'cups_of_coffee_per_day' to numeric, handling NAs
+coffee_clean_factors <- coffee_clean_factors %>%
+  mutate(cups_of_coffee_per_day = as.character(cups_of_coffee_per_day)) %>%
+  mutate(cups_of_coffee_per_day = as.numeric(cups_of_coffee_per_day)) %>%
+  filter(!is.na(cups_of_coffee_per_day))
+
+# Separate the data by gender for t-test comparison
+male_coffee <- coffee_clean_factors %>%
+  filter(gender == "Male") %>%
+  pull(cups_of_coffee_per_day)
+
+female_coffee <- coffee_clean_factors %>%
+  filter(gender == "Female") %>%
+  pull(cups_of_coffee_per_day)
+
+t_test_results <- t.test(male_coffee, female_coffee)
+
+print(t_test_results)
+```
+The t-statistic is 9.796, which is a measure of the difference between the two sample means relative to the variation in the samples. A higher t-value indicates a greater degree of difference.The p-value is less than 2.2e-16, which is essentially zero for practical purposes. This is far below the commonly used significance level of 0.05, indicating strong evidence against the null hypothesis.
+
+We reject the null hypothesis that there is no difference in the average number of cups of coffee consumed per day between males and females. The data provides strong evidence that males, on average, consume more cups of coffee per day than females. The result is statistically significant with a high degree of confidence.
+
+
 # Evaluation of significance
 
 *Pre-registered Hypothesis 1*
 
 We can investigate if the difference in proportions of preferring a lighter roast between age groups is statistically significant or not with a chi-squared test of independence.
-
 
 ```{r}
 #| label: show-independence-relationship
@@ -565,7 +601,6 @@ p_value
 
 
 *Research Question 2*
-
 
 
 # Interpretation and conclusions
