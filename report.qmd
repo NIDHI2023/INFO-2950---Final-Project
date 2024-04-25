@@ -9,6 +9,8 @@ author:
 echo: false
 warning: false
 message: false
+fig-width: 5
+fig-height: 3
 ---
 
 ```{r}
@@ -473,6 +475,8 @@ attributes? We will look into several factors such as age, gender, education lev
 
 This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
 ```{r}
+#|fig-width: 5
+#| fig-height: 5
 # Preference by Age
 roast_totals <- coffee_clean_factors |>
   group_by(roast_level) |>
@@ -517,6 +521,16 @@ coffee_clean_factors |>
   geom_bar() +
   labs(title = "Amount of caffeine in coffee by education level")
 ```
+
+In our analysis we can infer several things according to different variables and fields of participants.
+
+Coffee Roast Level by age variable: our data and visualization suggests that age ranges 18-24 have are not only the highest percentage but also favorite Light roast and Nordic roast. And across all ages those 55 - 64 years old were the most responsive to French.
+
+Cups of Coffee per day by Gender: The visuals suggests that people that identify as females are the highest counts of coffee drinkers per day.In all counts they drink less than 1 and more than 4.
+
+Cups of Coffee per day by employment: From this we can infer that Employed  fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. ON the opposite side homemakers are recorded to have the least counts of coffee cups.
+
+Caffine prefrence per education level:In this visual we can atest to the individuals with bachelors degrees have full caffeine in thier coffee are the most commen entry. but they are also the most in terms of decaf. A more insightful observation suggests that educational levels are not a pure indicator of the levels of caffination in participants coffees.
 
 
 $$ H_0: \mu_{\text{bach}} - \mu_{\text{no bach}} = 0 $$
