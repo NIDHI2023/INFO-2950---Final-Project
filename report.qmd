@@ -15,9 +15,13 @@ message: false
 # Introduction
 One of the most widely known beverages in today's age is coffee. It is present in many different settings, ranging from students and employees to casual coffee shop frequenters and critical coffee enthusiasts.
 Our current research questions are:
-- How does self-perceived coffee experience affect actual and stated preferences?
 - How does coffee preference and consumption habits differ by demographic
 attributes such as age, gender, education level, race, and political identity?
+```{r}
+# - How does self-perceived coffee experience affect actual and stated
+# preferences?
+```
+
 
 # Data description
 *What are the observations (rows) and the attributes (columns)?*
@@ -400,12 +404,14 @@ tidy(edu_sweetener_fit1)
 From the results of the logistical regression model, the negative coefficient for sweet_count reflects a lower probability for people with less than a Bachelor's degree choosing more sugar additive types than a person with a Bachelor's degree or higher would. 
 
 
-We now address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
+```{r}
+# We now address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
+```
 
 
 *Research Question 1*
-To answer the question how does coffee preference and consumption habits differ by demographic
-attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
+
+To answer the question how does coffee preference and consumption habits differ by demographic attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
 
 This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
 ```{r}
@@ -453,43 +459,6 @@ coffee_clean_factors |>
   geom_bar() +
   labs(title = "Amount of caffeine in coffee by education level")
 ```
-
-#Hypothesis Test: Coffee Consumption by Gender
-Research Focus: To assess whether there's a significant difference in the number of cups of coffee consumed per day across different genders.
-
-Null Hypothesis (H0): Male and Female consume the same average number of cups of coffee per day.
-
-$$ H_0: \mu_{\text{Male}} - \mu_{\text{Female}} = 0 $$
-
-Alternative Hypothesis (Ha): There is a difference in the average number of cups of coffee consumed per day between Male and Female.
-$$ H_0: \mu_{\text{Male}} - \mu_{\text{Female}} \neq 0 $$
-We'll proceed with an independent two-sample t-test to compare the average number of cups of coffee consumed per day between male and female groups.
-
-```{r}
-library(dplyr)
-# Convert 'cups_of_coffee_per_day' to numeric, handling NAs
-coffee_clean_factors <- coffee_clean_factors %>%
-  mutate(cups_of_coffee_per_day = as.character(cups_of_coffee_per_day)) %>%
-  mutate(cups_of_coffee_per_day = as.numeric(cups_of_coffee_per_day)) %>%
-  filter(!is.na(cups_of_coffee_per_day))
-
-# Separate the data by gender for t-test comparison
-male_coffee <- coffee_clean_factors %>%
-  filter(gender == "Male") %>%
-  pull(cups_of_coffee_per_day)
-
-female_coffee <- coffee_clean_factors %>%
-  filter(gender == "Female") %>%
-  pull(cups_of_coffee_per_day)
-
-t_test_results <- t.test(male_coffee, female_coffee)
-
-print(t_test_results)
-```
-The t-statistic is 9.796, which is a measure of the difference between the two sample means relative to the variation in the samples. A higher t-value indicates a greater degree of difference.The p-value is less than 2.2e-16, which is essentially zero for practical purposes. This is far below the commonly used significance level of 0.05, indicating strong evidence against the null hypothesis.
-
-We reject the null hypothesis that there is no difference in the average number of cups of coffee consumed per day between males and females. The data provides strong evidence that males, on average, consume more cups of coffee per day than females. The result is statistically significant with a high degree of confidence.
-
 
 # Evaluation of significance
 
@@ -600,24 +569,67 @@ p_value
 ```
 
 
-*Research Question 2*
+*Research Question 1*
+
+*Coffee Consumption by Gender*
+
+Research Focus: We saw in the data analysis section that there seems to be a clear relationship between gender and cups of coffee consumed per day. We can focus on the genders with the most data for better results - male and females. To assess whether there's a significant difference in the number of cups of coffee consumed per day across these genders, we can conduct an independent two sample t-test using the group means. This is an appropriate test since we want an average for two groups with different variances (male data is larger than female data)
+
+Null Hypothesis (H0): Males and Females consume the same average number of cups of coffee per day.
+
+$$ H_0: \mu_{\text{Male}} - \mu_{\text{Female}} = 0 $$
+
+Alternative Hypothesis (Ha): There is a difference in the average number of cups of coffee consumed per day between Male and Female.
+$$ H_0: \mu_{\text{Male}} - \mu_{\text{Female}} \neq 0 $$
+We'll proceed with an independent two-sample t-test to compare the average number of cups of coffee consumed per day between male and female groups.
+
+```{r}
+library(dplyr)
+# Convert 'cups_of_coffee_per_day' to numeric, handling NAs
+coffee_clean_factors <- coffee_clean_factors %>%
+  mutate(cups_of_coffee_per_day = as.character(cups_of_coffee_per_day)) %>%
+  mutate(cups_of_coffee_per_day = as.numeric(cups_of_coffee_per_day)) %>%
+  filter(!is.na(cups_of_coffee_per_day))
+
+# Separate the data by gender for t-test comparison
+male_coffee <- coffee_clean_factors %>%
+  filter(gender == "Male") %>%
+  pull(cups_of_coffee_per_day)
+
+female_coffee <- coffee_clean_factors %>%
+  filter(gender == "Female") %>%
+  pull(cups_of_coffee_per_day)
+
+t_test_results <- t.test(male_coffee, female_coffee)
+
+print(t_test_results)
+```
 
 
 # Interpretation and conclusions
 
 *Hypothesis 1*
+
 From the evaluation of significance, using an alpha value of 0.05, because our p-value of approximately 0 is less than 0.05, we can reject the null hypothesis. There is sufficient evidence that there is an association between age group and preferring lighter roasts of coffee.
 
 In the data analysis, a possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
 
 *Hypothesis 2*
+
 The hypothesis testing resulted in a p-value of 0.35, which is larger than 0.05. This high p-value indicates that we do not have sufficient evidence to reject the null hypothesis. Therefore, we conclude that the observed difference in the variety of sweeteners used by individuals with and without a Bachelor's degree is not statistically significant.
 
 Given the lack of statistical significance, any observed differences in sweetener use between the two educated groups are likely attributable to random variability rather than the true underlying effect of education on sweetener diversity. This finding suggests that factors other than education may play a more critical role in determining the type of sweetener an individual chooses to use.
+
+*Research Question 1*
+
+The t-statistic is 9.796, which is a measure of the difference between the two sample means relative to the variation in the samples. A higher t-value indicates a greater degree of difference. The p-value is less than 2.2e-16, which is essentially zero for practical purposes. This is far below the commonly used significance level of 0.05, indicating strong evidence against the null hypothesis.
+
+We reject the null hypothesis that there is no difference in the average number of cups of coffee consumed per day between males and females. The data provides strong evidence that males, on average, consume more cups of coffee per day than females. The result is statistically significant with a high degree of confidence.
 
 # Limitations
 
 Despite being such a wide variety of people this data is specific to the US and Isolate coffee experiences and prefrences common to the US only. Meanwhile, the study relied on data from survey respondents who may have a particular interest in coffee, potentially skewing the results toward those who are more engaged with their dietary choices.
 
 # Acknowledgments
+
 We thank all participants for their contributions to this study and acknowledge the efforts of our research team in collecting and analyzing the data. Their hard work has been instrumental in enhancing our understanding of consumer behavior related to coffee consumption.
