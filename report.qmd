@@ -9,6 +9,8 @@ author:
 echo: false
 warning: false
 message: false
+fig-width: 5
+fig-height: 3
 ---
 
 
@@ -48,31 +50,50 @@ Zip codes and geographic data seemed to have been removed. Participants were ano
 
 People were involved, and they were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, showing their willingness to accept these terms. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on.
 
-*Was there a specific gap that needed to be filled?* Please provide
-a description.
 
 *Are relationships between individual instances made explicit?*
+
 There are no explicit relationships between individual instances because the data provided is it's sole instance.
+
 *Are there recommended data splits?*
+
 No there are no recommended Data splits in this collection.
-*Are there any errors, sources of noise, or redundancies in the dataset?*
-There are instances of
+
+```{r}
+# *Are there any errors, sources of noise, or redundancies in the dataset?*
+# There are instances of
+```
+
 *Does the dataset contain data that might be considered confidential?*
-None
+
+Possibly demographic information, such as political affiliation, age, gender, education level.
+
 *Does the dataset identify any subpopulations (e.g., by age, gender)?*
-Yes,the great America Coffee taste seprated entries into sub-populations at the discretion of the participant
+
+Yes,the great America Coffee taste separated entries into sub-populations at the discretion of the participant
+
 *Is it possible to identify individuals, either directly or indirectly from the dataset?*
+
 No the identity of each participant was anonymized.
-*Does the dataset contain data that might be considered sensitive in any way *
+
 *What mechanisms or procedures were used to collect the data?*
-Participants who participated  of the great American Coffee test recived an event kit includes four different coffees from four different roasters that will be chemically identical if used with distilled water at the same ratio.Participants will need a weighing scale, a way of heating hot water, and cups that can accommodate about 250 mLs or eight ounces.The event is only available in the US, but the organizers are interested in conducting similar events in other regions.
+
+Participants who participated  of the great American Coffee test recieved an event kit includes four different coffees from four different roasters that will be chemically identical if used with distilled water at the same ratio.Participants will need a weighing scale, a way of heating hot water, and cups that can accommodate about 250 mLs or eight ounces.The event is only available in the US, but the organizers are interested in conducting similar events in other regions.
+
 *Were the individuals in question notified about the data collection?*
+
 The data was self reported and as a result consensual to each participant.
+
 *Was any preprocessing/cleaning/labeling of the data done *
+
 Yes data cleaning was done to make the variables and fields more readable and humanly understandably.
+
 *Was the “raw” data saved in addition to the preprocessed/cleaned/labeled data*
+
 Yes the raw data is stored in our repository and can still be accessed through this link publicly ( https://bit.ly/gacttCSV+)
+
 *Is there anything about the composition of the dataset or the way it was collected and leaned/labeled that might impact future uses? *
+
 The data was collected by individuals all over the US. There fore there may be inconsistencies with recording the data since there were no qualifications or standardized way of verifying results, except form participants practices.
 
 
@@ -83,6 +104,7 @@ Coffee B - Medium Roast
 Coffee C - Dark roast
 Coffee D - Fermented, Natural, Fruity
 Detailed description on task and methods used to collect the data(https://www.youtube.com/watch?v=1fN_z4-EcOU)
+
 *Loading data*
 
 ```{r}
@@ -411,24 +433,16 @@ From the results of the logistical regression model, the negative coefficient fo
 
 *Research Question 1*
 
-To answer the question how does coffee preference and consumption habits differ by demographic attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
+How does coffee preference and consumption habits differ by demographic attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
 
 This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
 ```{r}
-# age_roast_counts <- coffee_clean_factors |>
-#   filter(!is.na(roast_level) & !is.na(age)) |>
-#   group_by(age, roast_level) |>
-#   summarise(count = n()) |>
-#   left_join(roast_totals, by = "roast_level") |>
-#   mutate(percentage = count / total * 100)
-
-# ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
-#   geom_bar(stat = "identity", position = "dodge") +
-#   labs(title = "Coffee Roast Level Preferences by Age Group",
-#        x = "Roast Level",
-#        y = "Percentage") +
-#   theme_minimal() +
-#   scale_fill_viridis_d(end = 0.8)
+#|fig-width: 5
+#| fig-height: 5
+# Preference by Age
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
 
 #Preferences by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
 coffee_clean_factors |>
@@ -455,6 +469,17 @@ coffee_clean_factors |>
   labs(title = "Amount of caffeine in coffee by education level")
 ```
 
+In our analysis we can infer several things according to different variables and fields of participants.
+
+Coffee Roast Level by age variable: our data and visualization suggests that age ranges 18-24 have are not only the highest percentage but also favorite Light roast and Nordic roast. And across all ages those 55 - 64 years old were the most responsive to French.
+
+Cups of Coffee per day by Gender: The visuals suggests that people that identify as females are the highest counts of coffee drinkers per day.In all counts they drink less than 1 and more than 4.
+
+Cups of Coffee per day by employment: From this we can infer that Employed  fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. On the opposite side homemakers are recorded to have the least counts of coffee cups.
+
+Caffeine preference per education level: In this visual we can see that the individuals with bachelors degrees that have full caffeine in their coffee are the most common entry. But they are also the most common entry in terms of decaf. A more insightful observation suggests that educational levels are not a pure indicator of the levels of caffeination in participants coffees.
+
+
 # Evaluation of significance
 
 *Pre-registered Hypothesis 1*
@@ -470,7 +495,8 @@ Lighter = c("Light", "Medium", "Nordic"),
 other_level = "Darker"))
   ggplot(young_roast_binary, mapping = aes(x = age, fill = roast_level_binary)) +
   geom_bar(position = "fill") +
-    scale_fill_viridis_d()
+    scale_fill_viridis_d() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
@@ -515,6 +541,7 @@ p_value_independence
 To evaluate whether the number of types of sweetener accepted differ between people with different education degrees, we will conduct a two-side hypothesis test
 
 Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
+
 
 
 $$ H_0: \mu_{\text{bach}} - \mu_{\text{no bach}} = 0 $$
@@ -566,7 +593,7 @@ p_value
 
 *Research Question 1*
 
-*Coffee Consumption by Gender*
+*Narrowing to Coffee Consumption by Gender*
 
 Research Focus: We saw in the data analysis section that there seems to be a clear relationship between gender and cups of coffee consumed per day. We can focus on the genders with the most data for better results - male and females. To assess whether there's a significant difference in the number of cups of coffee consumed per day across these genders, we can conduct an independent two sample t-test using the group means. This is an appropriate test since we want an average for two groups with different variances (male data is larger than female data)
 
