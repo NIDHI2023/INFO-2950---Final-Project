@@ -430,7 +430,6 @@ From the results of the logistical regression model, the negative coefficient fo
 # We now address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
 ```
 
-
 *Research Question 1*
 
 How does coffee preference and consumption habits differ by demographic attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
@@ -460,7 +459,7 @@ ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_statu
        x = "Cups of Coffee per Day",
        y = "Employment Status")
 
-#Prefrences by education level
+#Preferences by education level
 coffee_clean_factors |>
   select(caffeine, education_level) |>
   drop_na() |>
@@ -471,14 +470,11 @@ coffee_clean_factors |>
 
 In our analysis we can infer several things according to different variables and fields of participants.
 
-Coffee Roast Level by age variable: our data and visualization suggests that age ranges 18-24 have are not only the highest percentage but also favorite Light roast and Nordic roast. And across all ages those 55 - 64 years old were the most responsive to French.
-
-Cups of Coffee per day by Gender: The visuals suggests that people that identify as females are the highest counts of coffee drinkers per day.In all counts they drink less than 1 and more than 4.
+Cups of Coffee per day by Gender: The visuals suggests that people that identify as males are the highest counts of coffee drinkers per day.In all counts they drink less than 1 and more than 4.
 
 Cups of Coffee per day by employment: From this we can infer that Employed  fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. On the opposite side homemakers are recorded to have the least counts of coffee cups.
 
 Caffeine preference per education level: In this visual we can see that the individuals with bachelors degrees that have full caffeine in their coffee are the most common entry. But they are also the most common entry in terms of decaf. A more insightful observation suggests that educational levels are not a pure indicator of the levels of caffeination in participants coffees.
-
 
 # Evaluation of significance
 
@@ -543,9 +539,7 @@ To evaluate whether the number of types of sweetener accepted differ between peo
 Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
 
 
-
 $$ H_0: \mu_{\text{bach}} - \mu_{\text{no bach}} = 0 $$
-
 
 Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
 
