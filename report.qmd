@@ -408,13 +408,14 @@ From the results of the logistical regression model, the negative coefficient fo
 # We now address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
 ```
 
-
 *Research Question 1*
-
-To answer the question how does coffee preference and consumption habits differ by demographic attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
+To answer the question how does coffee preference and consumption habits differ by demographic
+attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
 
 This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
 ```{r}
+#|fig-width: 5
+#| fig-height: 5
 # Preference by Age
 roast_totals <- coffee_clean_factors |>
   group_by(roast_level) |>
@@ -451,7 +452,7 @@ ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_statu
        x = "Cups of Coffee per Day",
        y = "Employment Status")
 
-#Prefrences by education level
+#Preferences by education level
 coffee_clean_factors |>
   select(caffeine, education_level) |>
   drop_na() |>
@@ -459,6 +460,18 @@ coffee_clean_factors |>
   geom_bar() +
   labs(title = "Amount of caffeine in coffee by education level")
 ```
+
+$$ H_0: \mu_{\text{bach}} - \mu_{\text{no bach}} = 0 $$
+
+In our analysis we can infer several things according to different variables and fields of participants.
+
+Coffee Roast Level by age variable: our data and visualization suggests that age ranges 18-24 have are not only the highest percentage but also favorite Light roast and Nordic roast. And across all ages those 55 - 64 years old were the most responsive to French.
+
+Cups of Coffee per day by Gender: The visuals suggests that people that identify as females are the highest counts of coffee drinkers per day.In all counts they drink less than 1 and more than 4.
+
+Cups of Coffee per day by employment: From this we can infer that Employed  fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. ON the opposite side homemakers are recorded to have the least counts of coffee cups.
+
+Caffine prefrence per education level:In this visual we can atest to the individuals with bachelors degrees have full caffeine in thier coffee are the most commen entry. but they are also the most in terms of decaf. A more insightful observation suggests that educational levels are not a pure indicator of the levels of caffination in participants coffees.
 
 # Evaluation of significance
 
@@ -520,75 +533,6 @@ p_value_independence
 To evaluate whether the number of types of sweetener accepted differ between people with different education degrees, we will conduct a two-side hypothesis test
 
 Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
-
-
-
-
-*Research Question 1*
-To answer the question how does coffee preference and consumption habits differ by demographic
-attributes? We will look into several factors such as age, gender, education level, race, and political identity. To do this we cleaned the data in a manner that preserves variables related to coffee preference, consumption habits and demographic indicators. 
-
-This Descriptive Analysis attempts to visually represents each variables and their relations to coffee.
-```{r}
-#|fig-width: 5
-#| fig-height: 5
-# Preference by Age
-roast_totals <- coffee_clean_factors |>
-  group_by(roast_level) |>
-  summarise(total = n())
-
-age_roast_counts <- coffee_clean_factors |>
-  filter(!is.na(roast_level) & !is.na(age)) |>
-  group_by(age, roast_level) |>
-  summarise(count = n()) |>
-  left_join(roast_totals, by = "roast_level") |>
-  mutate(percentage = count / total * 100)
-
-ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Coffee Roast Level Preferences by Age Group",
-       x = "Roast Level",
-       y = "Percentage") +
-  theme_minimal() +
-  scale_fill_viridis_d(end = 0.8)
-
-#Preferences by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
-coffee_clean_factors |>
-  select(gender, cups_of_coffee_per_day) |>
-  drop_na() |>
-  ggplot(aes(x = cups_of_coffee_per_day, fill = gender)) +
-  geom_bar(position= "stack")
-
-#Preferences by Employment per coffees per day
-coffee_clean_employ= coffee_clean|>
-  mutate(employment_status = ifelse(is.na(employment_status), "No disclosure", employment_status))
-ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_status)) +
-  geom_count() +
-  labs(title = "Correlation between Coffees per Day and Employment Status",
-       x = "Cups of Coffee per Day",
-       y = "Employment Status")
-
-#Prefrences by education level
-coffee_clean_factors |>
-  select(caffeine, education_level) |>
-  drop_na() |>
-  ggplot(aes(x = caffeine, fill = education_level)) +
-  geom_bar() +
-  labs(title = "Amount of caffeine in coffee by education level")
-```
-
-$$ H_0: \mu_{\text{bach}} - \mu_{\text{no bach}} = 0 $$
->>>>>>> 3e062834f20778747fef42d0d4a52f5a7481895b
-
-In our analysis we can infer several things according to different variables and fields of participants.
-
-Coffee Roast Level by age variable: our data and visualization suggests that age ranges 18-24 have are not only the highest percentage but also favorite Light roast and Nordic roast. And across all ages those 55 - 64 years old were the most responsive to French.
-
-Cups of Coffee per day by Gender: The visuals suggests that people that identify as females are the highest counts of coffee drinkers per day.In all counts they drink less than 1 and more than 4.
-
-Cups of Coffee per day by employment: From this we can infer that Employed  fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. ON the opposite side homemakers are recorded to have the least counts of coffee cups.
-
-Caffine prefrence per education level:In this visual we can atest to the individuals with bachelors degrees have full caffeine in thier coffee are the most commen entry. but they are also the most in terms of decaf. A more insightful observation suggests that educational levels are not a pure indicator of the levels of caffination in participants coffees.
 
 
 Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
