@@ -576,12 +576,13 @@ From the evaluation of significance, using an alpha value of 0.05, because our p
 In the data analysis, a possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts despite showing an overwhelming preference for Light and Medium roasts is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause and reveal something about younger people's coffee preferences.
 
 *Hypothesis 2*
+The hypothesis testing resulted in a p-value of 0.35, which is larger than 0.05. This high p-value indicates that we do not have sufficient evidence to reject the null hypothesis. Therefore, we conclude that the observed difference in the variety of sweeteners used by individuals with and without a Bachelor's degree is not statistically significant.
 
-
+Given the lack of statistical significance, any observed differences in sweetener use between the two educated groups are likely attributable to random variability rather than the true underlying effect of education on sweetener diversity. This finding suggests that factors other than education may play a more critical role in determining the type of sweetener an individual chooses to use.
 
 # Limitations
 
-Despite being such a wide variety of people this data is specific to the US and Isolate coffee experiences and prefrences common to the US only.
+Despite being such a wide variety of people this data is specific to the US and Isolate coffee experiences and prefrences common to the US only. Meanwhile, the study relied on data from survey respondents who may have a particular interest in coffee, potentially skewing the results toward those who are more engaged with their dietary choices.
 
 # Acknowledgments
-
+We thank all participants for their contributions to this study and acknowledge the efforts of our research team in collecting and analyzing the data. Their hard work has been instrumental in enhancing our understanding of consumer behavior related to coffee consumption.
