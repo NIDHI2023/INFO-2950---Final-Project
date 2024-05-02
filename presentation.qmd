@@ -2,21 +2,24 @@
 title: Coffee Preferences
 author: Brilliant Cassowary <br> Jinpeng Li, Joice Chen, Nidhi Soma, Stephen Syl-Akinwale 
 date: today
-format: revealjs
+format:
+  revealjs: 
+    theme: simple
 execute:
   echo: false
 ---
 
 ## Introduce the topic and motivation
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+Coffee is one of the most popular choices for students across campus. We wanted to see if there were any trends we could analyze about coffee preferences at large.
+
+General research question: How does coffee preference and consumption habits differ by demographic attributes such as age, gender, education level, race, and political identity?
 
 ## Introduce the data
 
-When you click the **Render** button a document will be generated that includes:
+- Data collected from James Hoffman's "The Great American Coffee Taste Test"
 
--   Content authored with markdown
--   Output from executable code
+- Surveyed almost 4000 respondents about their coffee preferences
 
 ## Highlights from EDA
 
