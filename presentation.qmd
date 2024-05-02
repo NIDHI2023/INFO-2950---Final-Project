@@ -20,6 +20,9 @@ General research question: How does coffee preference and consumption habits dif
 - Data collected from James Hoffman's "The Great American Coffee Taste Test"
 
 - Surveyed almost 4000 respondents about their coffee preferences
+- Participants were required weighing scale,a way of heating hot water, 
+and cups that can accommodate about 250 mLs or eight ounces
+- Coffee A - Light roast, Washed, Coffee B - Medium Roast, Coffee C - Dark roast, Coffee D - Fermented, Natural, Fruity
 
 ## Highlights from EDA
 
