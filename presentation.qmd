@@ -42,7 +42,7 @@ Your results here
 
 ## Conclusions + future work
 
-#Limitations
+##Limitations
 - Answers were not mandatory so there were a lot of absent values
 - It was only conducted in the US
 - Because Measurements were not uniformly recorded, it is likely respondents misrepresented their measurements.
