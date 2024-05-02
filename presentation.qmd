@@ -1,8 +1,7 @@
 ---
-title: Presentation title
-subtitle: Presentation subtitle (if any)
-author: Team name <br> Names of team members
-date: Your date
+title: Coffee Preferences
+author: Brilliant Cassowary <br> Jinpeng Li, Joice Chen, Nidhi Soma, Stephen Syl-Akinwale 
+date: today
 format: revealjs
 execute:
   echo: false
