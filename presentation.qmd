@@ -41,3 +41,10 @@ Your results here
 Your results here
 
 ## Conclusions + future work
+
+#Limitations
+- Answers were not mandatory so there were a lot of absent values
+- It was only conducted in the US
+- Because Measurements were not uniformly recorded, it is likely respondents misrepresented their measurements.
+- It was provided by cometncer coffee company, it is possible their roasts are very different from other brands
+- The population available are already avid coffee drinkers so there might be bias to some of their responses.
