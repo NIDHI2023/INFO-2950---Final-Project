@@ -245,6 +245,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -353,94 +354,143 @@ Brilliant Cassowary <br> Jinpeng Li, Joice Chen, Nidhi Soma, Stephen Syl-Akinwal
 <li><p>Coffee A - Light roast, Washed, Coffee B - Medium Roast, Coffee C - Dark roast, Coffee D - Fermented, Natural, Fruity</p></li>
 </ul>
 </section>
-<section id="highlights-from-eda" class="slide level2">
-<h2>Highlights from EDA</h2>
+<section id="most-preferred-roast-level" class="slide level2 smaller">
+<h2>Most Preferred Roast Level</h2>
 <p>Looking at these variables we can see age ranges 25-34 are the most avid coffee drinkers. We want to see more about their taste preferences.</p>
 
 <img data-src="presentation_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch"></section>
-<section id="educational" class="slide level2">
-<h2>Educational</h2>
+<section id="similar-sweetener-preference-by-educational-level" class="slide level2 smaller">
+<h2>Similar Sweetener Preference by Educational Level</h2>
 
 <img data-src="presentation_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section>
-<section id="inference-for-roast-level" class="slide level2">
-<h2>Inference for Roast Level</h2>
+<section id="hypothesis-1-inference-for-roast-level" class="slide level2 smaller">
+<h2>Hypothesis 1: Inference for Roast Level</h2>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 5
-  term               estimate std.error statistic  p.value
-  &lt;chr&gt;                 &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)          0.842     0.0772    10.9   2.73e-27
-2 age18-24 years old   0.0229    0.0789     0.290 7.72e- 1
-3 age25-34 years old   0.0519    0.0776     0.669 5.04e- 1
-4 age35-44 years old   0.0342    0.0780     0.439 6.61e- 1
-5 age45-54 years old  -0.0233    0.0797    -0.293 7.70e- 1
-6 age55-64 years old  -0.146     0.0811    -1.81  7.11e- 2
-7 age&gt;65 years old    -0.161     0.0847    -1.90  5.70e- 2</code></pre>
+<div class="cell-output-display">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">0.8421053</td>
+<td style="text-align: right;">0.0772352</td>
+<td style="text-align: right;">10.9031299</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age18-24 years old</td>
+<td style="text-align: right;">0.0228833</td>
+<td style="text-align: right;">0.0788963</td>
+<td style="text-align: right;">0.2900425</td>
+<td style="text-align: right;">0.7717990</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age25-34 years old</td>
+<td style="text-align: right;">0.0519040</td>
+<td style="text-align: right;">0.0776100</td>
+<td style="text-align: right;">0.6687794</td>
+<td style="text-align: right;">0.5036755</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age35-44 years old</td>
+<td style="text-align: right;">0.0342161</td>
+<td style="text-align: right;">0.0780069</td>
+<td style="text-align: right;">0.4386287</td>
+<td style="text-align: right;">0.6609547</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age45-54 years old</td>
+<td style="text-align: right;">-0.0233133</td>
+<td style="text-align: right;">0.0796593</td>
+<td style="text-align: right;">-0.2926627</td>
+<td style="text-align: right;">0.7697955</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age55-64 years old</td>
+<td style="text-align: right;">-0.1464531</td>
+<td style="text-align: right;">0.0811249</td>
+<td style="text-align: right;">-1.8052786</td>
+<td style="text-align: right;">0.0711077</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age&gt;65 years old</td>
+<td style="text-align: right;">-0.1612542</td>
+<td style="text-align: right;">0.0846819</td>
+<td style="text-align: right;">-1.9042350</td>
+<td style="text-align: right;">0.0569527</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <ul>
-<li><p>Model predicts that people aged 18-24 years old will have a 0.029 lower proportion of people that prefer lighter roasts than people aged 25-34 years old, on average.</p></li>
-<li><p>Younger people aged 18-24 are actually not the most likely group to prefer lighter roasts?</p></li>
+<li><p>Model predicts that people aged 18-24 years old will have a 0.0229 lower proportion of people that prefer lighter roasts than people aged 25-34 years old, on average.</p></li>
+<li><p>Leads to question: Are people aged 18-24 actually not the most likely group to prefer lighter roasts?</p></li>
 </ul>
 </section>
-<section id="visualizing-lighterdarker-roasts" class="slide level2">
-<h2>Visualizing Lighter/Darker Roasts</h2>
+<section id="hypothesis-1-visualizing-lighterdarker-roasts" class="slide level2 smaller">
+<h2>Hypothesis 1: Visualizing Lighter/Darker Roasts</h2>
 
-<img data-src="presentation_files/figure-revealjs/show-independence-relationship-1.png" width="960" class="r-stretch"><p>If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.</p>
+<img data-src="presentation_files/figure-revealjs/show-independence-relationship-1.png" width="960" class="r-stretch"><ul>
+<li><p>If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group.</p></li>
+<li><p>Are differences just random noise or a meaningful relationship? - Chi square test!</p></li>
+</ul>
 </section>
-<section id="chi-squared-test-for-roast-level" class="slide level2">
-<h2>Chi squared test for Roast Level</h2>
+<section id="hypothesis-1-chi-squared-test-for-roast-level" class="slide level2">
+<h2>Hypothesis 1: Chi squared test for Roast Level</h2>
 <p>Null hypothesis: There is no association between age group and a lighter roast level preference.</p>
 <p>Alternative hypothesis: There is an association between age group and a lighter roast level preference.</p>
-<div class="cell">
-
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 1
-  p_value
-    &lt;dbl&gt;
-1       0</code></pre>
-</div>
-</div>
-<img data-src="presentation_files/figure-revealjs/chi-sqr-test-1.png" width="960" class="r-stretch"></section>
-<section id="hypothesis-test-for-sweetener-preference" class="slide level2">
-<h2>Hypothesis Test for Sweetener Preference</h2>
-<p>Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor’s degree or higher and people without a Bachelor’s degree.</p>
-<p>Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor’s degree or higher and people without a Bachelor’s degree.</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
-  education_level  mean
-  &lt;fct&gt;           &lt;dbl&gt;
-1 bachelor         1.46
-2 no_bachelor      1.41</code></pre>
-</div>
-</div>
-<p>The observed statistic is 1.455-1.408 = 0.047</p>
 </section>
-<section id="hypothesis-test-for-sweetener-preference-1" class="slide level2">
-<h2>Hypothesis Test for Sweetener Preference</h2>
-<div class="cell">
+<section class="slide level2">
 
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 1
-  p_value
-    &lt;dbl&gt;
-1   0.345</code></pre>
+
+<img data-src="presentation_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><div class="cell">
+<div class="cell-output-display">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">p_value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<img data-src="presentation_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><p>The hypothesis test resulted in a p-value of 0.35, which is larger than the critical value of 0.05. This high p-value indicates that we do not have sufficient evidence to reject the null hypothesis.</p>
+<p>We can reject the null hypothesis because our p-value of approximately 0 is less than the alpha value of 0.05.</p>
 </section>
-<section id="conclusions-future-work" class="slide level2">
+<section id="conclusions-future-work" class="slide level2 smaller">
 <h2>Conclusions + future work</h2>
+<ul>
+<li>For roast level, there is sufficient evidence that there is an association between age group and preferring lighter roasts of coffee.</li>
+<li>Certain age groups are more prone to enjoying a certain taste, while others prefer the caffeine.</li>
+<li>For number of sweeteners and educational level, we cannot really come to a conclusion</li>
+</ul>
+<p>Future directions:</p>
+<ul>
+<li><p>Text analysis for the columns specifying people’s reason for enjoying coffee versus their age group to explore this hypothesis.</p></li>
+<li><p>Make results more specific and relevant to Cornell community - held back by limitations on next slide</p></li>
+</ul>
 </section>
 <section id="limitations" class="slide level2">
 <h2>Limitations</h2>
 <ul>
-<li>Answers were not mandatory so there were a lot of absent values</li>
-<li>It was only conducted in the US</li>
-<li>Because Measurements were not uniformly recorded, it is likely respondents misrepresented their measurements.</li>
-<li>It was provided by cometncer coffee company, it is possible their roasts are very different from other brands</li>
-<li>The population available are already avid coffee drinkers so there might be bias to some of their responses.</li>
+<li><p>Answers were not mandatory, lots of absent values</p></li>
+<li><p>Only conducted in the US</p></li>
+<li><p>Respondents could have misrepresented their measurements</p></li>
+<li><p>Provided by Cometeer coffee company: possibly different tastes and limited selection</p></li>
+<li><p>Population is not representative: respondents are already avid coffee drinkers</p></li>
 </ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
