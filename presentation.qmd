@@ -29,7 +29,32 @@ and cups that can accommodate about 250 mLs or eight ounces
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r}
-1 + 1
+library(tidyverse)
+library(janitor)
+library(dplyr)
+library(skimr)
+library(stringr)
+library(ggplot2)
+library(usethis)
+library(tidymodels)
+library(probably)
+coffee_clean_factors<- readRDS("~/R/project/project-brilliant-cassowary/data/coffee_clean_factor.rds")
+#age vs  roast
+#coffee like or not by age
+coffee_clean_factors |>
+  select(like_coffee, age) |>
+  drop_na() |>
+  ggplot(aes(x = like_coffee, fill = age)) +
+  geom_bar() +
+  labs(title = "Do you like coffee or not by age group")
+
+#Education vs number of sweetners
+
+
+#Coffee preference by gender
+
+
+
 ```
 
 ## Inference/modeling/other analysis
