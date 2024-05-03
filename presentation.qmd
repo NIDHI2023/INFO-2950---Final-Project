@@ -26,7 +26,7 @@ and cups that can accommodate about 250 mLs or eight ounces
 
 ## Highlights from EDA
 
-
+Looking at these variables we can see age ranges 25-34 most avid coffee drinkres. We want toseee more about thier taste prefrences.
 ```{r}
 library(tidyverse)
 library(janitor)
@@ -40,19 +40,53 @@ library(probably)
 coffee_clean_factors<- read_rds("data/coffee_clean_factor.rds")
 #age vs  roast
 #coffee like or not by age
-coffee_clean_factors |>
-  select(like_coffee, age) |>
-  drop_na() |>
-  ggplot(aes(x = like_coffee, fill = age)) +
-  geom_bar() +
-  labs(title = "Do you like coffee or not by age group")
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
 
+age_roast_counts <- coffee_clean_factors |>
+  filter(!is.na(roast_level) & !is.na(age)) |>
+  group_by(age, roast_level) |>
+  summarise(count = n()) |>
+  left_join(roast_totals, by = "roast_level") |>
+  mutate(percentage = count / total * 100)
+
+ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Coffee Roast Level Preferences by Age Group",
+       x = "Roast Level",
+       y = "Percentage") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+```
+
+## Educational 
+```{r}
 #Education vs number of sweetners
 
+sweet_edu_df <- coffee_clean_factors |>
+  select(education_level, contains("sugar_sweetener_add")) |>
+  drop_na()
+names(sweet_edu_df) <- gsub("sugar_sweetener_add_", "", names(sweet_edu_df))
+sweet_edu_df <- sweet_edu_df |> 
+  mutate(education_level = case_when(
+    education_level %in% c("Bachelor's degree", "Master's degree", "Doctorate or professional degree") ~ "bachelor",
+    TRUE ~ "no_bachelor"
+  )) |>
+  mutate(education_level = factor(education_level,
+                                  c("bachelor",
+                                    "no_bachelor")))
 
-#Coffee preference by gender
-
-
+sweet_edu_df2 <- sweet_edu_df |>
+  pivot_longer(
+    cols = 2:9,
+    names_to = "sweetener",
+    values_to = "add"
+  ) 
+sweet_edu_df2 |>
+  ggplot(aes(y = sweetener, fill = add) ) +
+  geom_bar(position = "fill") +
+  facet_wrap(.~education_level)
 
 ```
 
@@ -66,7 +100,9 @@ Your results here
 
 ## Conclusions + future work
 
-##Limitations
+
+
+## Limitations
 - Answers were not mandatory so there were a lot of absent values
 - It was only conducted in the US
 - Because Measurements were not uniformly recorded, it is likely respondents misrepresented their measurements.
