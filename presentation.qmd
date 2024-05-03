@@ -90,7 +90,7 @@ sweet_edu_df2 |>
 
 ```
 
-## Inference for Roast Level
+## Hypothesis 1: Inference for Roast Level
 
 ```{r}
 #| label: lin-reg-all-prefs
@@ -112,7 +112,7 @@ tidy(young_roast_fit)
 
 - Younger people aged 18-24 are actually not the most likely group to prefer lighter roasts?
 
-## Visualizing Lighter/Darker Roasts
+## Hypothesis 1: Visualizing Lighter/Darker Roasts
 
 ```{r}
 #| label: show-independence-relationship
@@ -129,7 +129,7 @@ other_level = "Darker"))
 
 If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
 
-## Chi squared test for Roast Level
+## Hypothesis 1: Chi squared test for Roast Level
 
 Null hypothesis: There is no association between age group and a lighter roast level preference.
 
@@ -166,7 +166,7 @@ p_value_independence
 
 ```
 
-## Hypothesis Test for Sweetener Preference
+## Hypothesis 2: Hypothesis Test for Sweetener Preference
 
 Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
 
@@ -200,7 +200,7 @@ sweet_edu_df_analysis |>
 
 The observed statistic is 1.455-1.408 = 0.047
 
-## Hypothesis Test for Sweetener Preference 
+## Hypothesis 2: Hypothesis Test for Sweetener Preference 
 
 ```{r}
 #Hypothesis testing
