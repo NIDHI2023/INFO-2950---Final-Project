@@ -37,7 +37,7 @@ library(ggplot2)
 library(usethis)
 library(tidymodels)
 library(probably)
-coffee_clean_factors<- readRDS("~/R/project/project-brilliant-cassowary/data/coffee_clean_factor.rds")
+coffee_clean_factors<- read_rds("data/coffee_clean_factor.rds")
 #age vs  roast
 #coffee like or not by age
 coffee_clean_factors |>
