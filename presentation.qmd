@@ -26,7 +26,7 @@ and cups that can accommodate about 250 mLs or eight ounces
 
 ## Highlights from EDA
 
-Looking at these variables we can see age ranges 25-34 most avid coffee drinkres. We want toseee more about thier taste prefrences.
+Looking at these variables we can see age ranges 25-34 are the most avid coffee drinkers. We want to see more about their taste preferences.
 ```{r}
 library(tidyverse)
 library(janitor)
@@ -90,11 +90,84 @@ sweet_edu_df2 |>
 
 ```
 
-## Inference/modeling/other analysis
+## Inference for Roast Level
 
-Your results here
+```{r}
+#| label: lin-reg-all-prefs
+  young_roast_reg<-  coffee_clean_factors |>
+  select(age, roast_level) |>
+  drop_na() |>
+    mutate(roast_level_num = ifelse(roast_level == "Light" | roast_level == "Medium" | roast_level == "Nordic", 1, 0))
+  
+young_roast_fit <- linear_reg() |>
+fit(roast_level_num ~ age, data = young_roast_reg)
+tidy(young_roast_fit)
 
-## Inference/modeling/other analysis
+# glance(young_roast_fit)$adj.r.squared
+#for diff of props, the output is saying one group is % more probable than the other
+#topic modeling for text-analysis?
+```
+
+- Model predicts that people aged 18-24 years old will have a 0.029 lower proportion of people that prefer lighter roasts than people aged 25-34 years old, on average. 
+
+- Younger people aged 18-24 are actually not the most likely group to prefer lighter roasts?
+
+## Visualizing Lighter/Darker Roasts
+
+```{r}
+#| label: show-independence-relationship
+young_roast_binary <-young_roast_reg |>
+  mutate(roast_level_binary = fct_collapse(
+.f = roast_level,
+Lighter = c("Light", "Medium", "Nordic"),
+other_level = "Darker"))
+  ggplot(young_roast_binary, mapping = aes(x = age, fill = roast_level_binary)) +
+  geom_bar(position = "fill") +
+    scale_fill_viridis_d() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
+
+## Chi squared test for Roast Level
+
+Null hypothesis: There is no association between age group and a lighter roast level preference.
+
+Alternative hypothesis: There is an association between age group and a lighter roast level preference.
+
+```{r}
+#| label: chi-sqr-test
+#source: https://infer.netlify.app/articles/chi_squared
+# calculate the observed statistic
+observed_indep_statistic <- young_roast_binary %>%
+  specify(roast_level_binary ~ age) %>%
+  hypothesize(null = "independence") %>%
+  calculate(stat = "Chisq")
+
+# generate the null distribution using randomization
+null_dist_roast <- young_roast_binary %>%
+  specify(roast_level_binary ~ age) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 5000, type = "permute") %>%
+  calculate(stat = "Chisq")
+
+# visualize the null distribution and test statistic!
+null_dist_roast %>%
+  visualize() + 
+  shade_p_value(observed_indep_statistic,
+                direction = "greater")
+
+# calculate the p value from the observed statistic and null distribution
+p_value_independence <- null_dist_roast %>%
+  get_p_value(obs_stat = observed_indep_statistic,
+              direction = "greater")
+
+p_value_independence
+
+```
+
+
+## Inference for Sweetener Number
 
 Your results here
 
