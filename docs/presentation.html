@@ -402,10 +402,33 @@ Brilliant Cassowary <br> Jinpeng Li, Joice Chen, Nidhi Soma, Stephen Syl-Akinwal
 </div>
 </div>
 <img data-src="presentation_files/figure-revealjs/chi-sqr-test-1.png" width="960" class="r-stretch"></section>
-<section id="inference-for-sweetener-number" class="slide level2">
-<h2>Inference for Sweetener Number</h2>
-<p>Your results here</p>
+<section id="hypothesis-test-for-sweetener-preference" class="slide level2">
+<h2>Hypothesis Test for Sweetener Preference</h2>
+<p>Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor’s degree or higher and people without a Bachelor’s degree.</p>
+<p>Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor’s degree or higher and people without a Bachelor’s degree.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  education_level  mean
+  &lt;fct&gt;           &lt;dbl&gt;
+1 bachelor         1.46
+2 no_bachelor      1.41</code></pre>
+</div>
+</div>
+<p>The observed statistic is 1.455-1.408 = 0.047</p>
 </section>
+<section id="hypothesis-test-for-sweetener-preference-1" class="slide level2">
+<h2>Hypothesis Test for Sweetener Preference</h2>
+<div class="cell">
+
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1   0.348</code></pre>
+</div>
+</div>
+<img data-src="presentation_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
 <section id="conclusions-future-work" class="slide level2">
 <h2>Conclusions + future work</h2>
 </section>

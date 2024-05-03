@@ -166,10 +166,72 @@ p_value_independence
 
 ```
 
+## Hypothesis Test for Sweetener Preference
 
-## Inference for Sweetener Number
+Null hypothesis: The true average number of types of sweetener preferred is the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
 
-Your results here
+Alternative hypothesis: The true average number of types of sweetener preferred is not the same between people in America with a Bachelor's degree or higher and people without a Bachelor's degree.
+
+```{r}
+#| label: 2sample-statistics-sweetener
+#clean original dataset
+sweet_edu_df <- coffee_clean_factors |>
+  select(education_level, contains("sugar_sweetener_add")) |>
+  drop_na()
+names(sweet_edu_df) <- gsub("sugar_sweetener_add_", "", names(sweet_edu_df))
+sweet_edu_df <- sweet_edu_df |> 
+  mutate(education_level = case_when(
+    education_level %in% c("Bachelor's degree", "Master's degree", "Doctorate or professional degree") ~ "bachelor",
+    TRUE ~ "no_bachelor"
+  )) |>
+  mutate(education_level = factor(education_level,
+                                  c("bachelor",
+                                    "no_bachelor")))
+
+#data set for analysis, with number of sugar types
+sweet_edu_df_analysis <- sweet_edu_df |>
+  rowwise() |>
+  mutate(sweet_count = sum(across(granulated_sugar:raw_sugar), na.rm = TRUE))
+
+sweet_edu_df_analysis |>
+  group_by(education_level) |>
+   summarize(mean = mean(sweet_count))
+```
+
+The observed statistic is 1.455-1.408 = 0.047
+
+## Hypothesis Test for Sweetener Preference 
+
+```{r}
+#Hypothesis testing
+#| label: 2sample-statistics-sweetener2
+
+ob_sweet <- sweet_edu_df_analysis |>
+  specify(response = sweet_count, explanatory = education_level) |>
+  hypothesize(null = "independence") |>
+  calculate(stat = "diff in means")
+
+# null distribution
+null_dist_sweet <- sweet_edu_df_analysis |>
+  specify(response = sweet_count, explanatory = education_level) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "diff in means")
+
+# visualize the null distribution and test statistic
+null_dist_sweet |>
+  visualize() + 
+  shade_p_value(ob_sweet,
+                direction = "greater")
+
+# calculate the p value from the observed statistic and null distribution
+p_value <- null_dist_sweet |>
+  get_p_value(obs_stat = ob_sweet,
+              direction = "greater")
+
+p_value
+```
+The hypothesis test resulted in a p-value of 0.35, which is larger than the critical value of 0.05. This high p-value indicates that we do not have sufficient evidence to reject the null hypothesis.
 
 ## Conclusions + future work
 
