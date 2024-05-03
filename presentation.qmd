@@ -26,7 +26,6 @@ and cups that can accommodate about 250 mLs or eight ounces
 
 ## Highlights from EDA
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r}
 library(tidyverse)
