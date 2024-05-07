@@ -179,8 +179,13 @@ sweet_edu_df2 |>
 
 #number of added sweeteners by education level
 sweet_edu_df2 |>
-  ggplot(aes(y = education_level), fill = add, color = "blue") +
-  geom_bar()
+  ggplot(aes(y = education_level), fill = "blue") +
+  geom_bar() +
+  labs(
+    title = "Number of added sweeteners by education level",
+    x = "Count",
+    y = "Education level"
+  )
 ```
 These graphs show the distributions for each variable, so we can get an idea of the different groups we are working with. We see that granulated_sugar is the most popular sweetener, and people with higher than a Bachelor's degree are more common in this sample, which could potentially skew results. Next, we see how these two variables are related to each other through proportions, where we can more directly compare the visual differences.
 
@@ -196,18 +201,30 @@ These graphs show the distributions for each variable, so we can get an idea of 
 sweet_edu_df2 |>
   ggplot(aes(y = education_level, fill = add) ) +
   geom_bar(position = "fill") +
-  facet_wrap(.~sweetener)
+  facet_wrap(.~sweetener) +
+  labs(
+    title = "Proportion of people who add sweetener",
+    subtitle= "By type of sweetener and education level",
+    x = "Proportion",
+    y= "Education level"
+  )
 
 #number of sugar type by education
 sweet_edu_df_analysis |>
   ggplot(aes(x = sweet_count, fill = education_level)) +
-  geom_bar(position = "dodge")
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Number of sweeteners by education level",
+    x = "Number of sweeteners added to coffee",
+    y = "Count",
+    fill = "Education level"
+  )
 
 
 
 
 ```
-The visualizations for the proportions seem to show little difference between the distribution of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. Instead of looking at the types of sweeteners, we can look at the number of sweeteners that a person uses. This can tell us about their taste preferences, and perhaps lead to insights for making a more appealing coffee to that market of users. Seeing the number of sweeteners a person adds gives an indication to their tolerance/preference for sweetness in their coffee. We can answer the question of how many sweeteners someone uses corresponding to education level through the logistic regression below.
+The visualizations for the proportions seem to show little difference between the distribution of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. Instead of looking at the types of sweeteners, we can look at the number of sweeteners that a person uses. Seeing the number of sweeteners a person adds gives an indication to their tolerance/preference for sweetness in their coffee. We can answer the question of how many sweeteners someone uses corresponding to education level through the logistic regression below.
 
 ```{r}
 #| label: log-reg
@@ -243,7 +260,12 @@ coffee_clean_factors |>
   select(gender, cups_of_coffee_per_day) |>
   drop_na() |>
   ggplot(aes(x = cups_of_coffee_per_day, fill = gender)) +
-  geom_bar(position= "stack")
+  geom_bar(position= "stack") +
+  labs (
+      title = "Relation between Coffees per Day and Gender",
+       x = "Cups of Coffee per Day",
+       y = "Count",
+       fill = "Gender")
 
 #Preferences by Employment per coffees per day
 coffee_clean_employ<- coffee_clean_factors|>
@@ -251,9 +273,10 @@ coffee_clean_employ<- coffee_clean_factors|>
   filter(!is.na(cups_of_coffee_per_day))
 ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, fill = employment_status)) +
   geom_bar() +
-  labs(title = "Correlation between Coffees per Day and Employment Status",
+  labs(title = "Relation between Coffees per Day and Employment Status",
        x = "Cups of Coffee per Day",
-       y = "Employment Status")
+       y= "Count",
+       fill = "Employment Status")
 
 # #Preferences by education level
 # coffee_clean_factors |>
