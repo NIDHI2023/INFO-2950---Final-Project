@@ -15,17 +15,14 @@ fig-height: 3
 
 
 # Introduction
-One of the most frequently bought drinks on campus is coffee. But it is present in many more settings, ranging from casual coffee shop frequenters and critical coffee enthusiasts. Our question was how does coffee preference differ by demographic attributes such as age, gender, education level, race, and political identity? To examine this question in a narrower scope, we looked at certain consumption habits based on age, gender, and education level.
-
-
-*ADD SUMMARY OF RESULTS*
+One of the most frequently bought drinks on campus is coffee. But it is present in many more settings, ranging from casual coffee shop frequenters and critical coffee enthusiasts. Our question was how does coffee preference differ by demographic attributes such as age, gender, education level, race, and political identity? To examine this question in a narrower scope, we looked at certain consumption habits based on age, gender, and education level. We found that there is an association between roast preference and age, and males on average, consume more coffee per day than females, and we were not able to make conclusions about how education level affects the amount of sweetness preferred.
 
 # Data description
 Our dataset comes from survey responses that world champion barista James Hoffmann made available to the public after conducting his "Great American Coffee Taste Test". This datset was also partially funded by Cometeer – a subscription service that makes flash-frozen coffee capsules - who may be interested to know people's preferences in order to make their coffee capsules more appealing to a wider market. The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns. This dataset was created to understand the general public's preferences as consumers for coffee.
 
-The survey quickly was sold out, and Hoffman's audience in general is coffee specialists. That will likely skew the population surveyed to be people who likely prefer specialty coffee, so it may be a biased sample. Additionally, this survey was conducted through people ordering tasting kits online, which were then sent to the participants to prepare and complete voluntarily, so there may have been differences in that. Participants needed a weighing scale, a way of heating hot water, and cups that can accommodate about 250 mLs or eight ounces. One example is that because participants were following a livestream to demonstrate how to do their taste test, their coffees may have been out long enough to have cooled, which could be another unaccounted variable that affected their taste preferences.
+The survey quickly was sold out, and Hoffman's audience in general is coffee specialists. That will likely skew the population surveyed to be people who likely prefer specialty coffee, so it may be a biased sample. Additionally, this survey was conducted through people ordering tasting kits online, which were then sent to the participants to prepare and complete voluntarily, so there may have been differences in that.
 
-There was some preprocessing in that zip codes and geographic data have been removed and participants were anonymized to protect their privacy, so it doesn't seem possible to re-identify individuals. The dataset contains information that may be confidential and identifies subpopulations, such as political affiliation, race, age, gender, employment status, number of children, and education level.  It wasn't disclosed how Hoffmann and his team collected all the taste test results that participants filled out, but once they got that data, they made it into a spreadsheet to be shared with the public. People were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. Hoffmann also made his intentions for the survey clear in his video, and that he was planning to publicize the raw data later on. The participants had to order the coffee tasting kit on their own in order to participate, implying their consent to these terms. There are no explicit relationships between individual instances because the data was anonymized, and there are also no recommended data splits in this collection.
+There was some preprocessing in that zip codes and geographic data have been removed and participants were anonymized to protect their privacy, so it doesn't seem possible to re-identify individuals. The dataset contains information that may be confidential and identifies subpopulations, such as political affiliation, race, age, gender, employment status, number of children, and education level.  It wasn't disclosed how Hoffmann and his team collected all the taste test results that participants filled out, but once they got that data, they made it into a spreadsheet to be shared with the public. People were made aware of the data collection by a YouTube video. Hoffmann made his intentions for the survey clear in his video, and that he was planning to publicize the raw data later on. The participants had to order the coffee tasting kit on their own in order to participate, implying their consent to these terms. There are no explicit relationships between individual instances because the data was anonymized, and there are also no recommended data splits in this collection.
 
 Some data cleaning was done to rename the variables and remove columns with little information, such as "flavorings" and "Gender (please specify)". The raw data is stored in our repository and can still be accessed through this link publicly ( https://bit.ly/gacttCSV+).
 
@@ -88,34 +85,7 @@ Our first pre-registered hypothesis was that younger people 18 - 25 prefer their
 ```
 We see that there is a clear peak around the Light and Medium roast levels, suggesting that in this sample, younger people that are 18-24 years old have a strong preference for Light and Medium roast levels. However, there is more of a preference for Dark roasts than Nordic roasts, even though Nordic roasts are also generally considered to be lighter roasts.
 
-This leads to the question of whether the younger age range of 18-24 is the most likely age to prefer lighter roast levels (Light, Medium, or Nordic). We investigate this below by first visualizing the preferences of all the age ranges, and then using a linear regression model. 
-```{r}
-#| label: visual-all-prefs
-#| fig-width: 8
-#| fig-height: 6
-#| 
-#age vs  roast
-#coffee like or not by age
-roast_totals <- coffee_clean_factors |>
-  group_by(roast_level) |>
-  summarise(total = n())
-
-age_roast_counts <- coffee_clean_factors |>
-  filter(!is.na(roast_level) & !is.na(age)) |>
-  group_by(age, roast_level) |>
-  summarise(count = n()) |>
-  left_join(roast_totals, by = "roast_level") |>
-  mutate(percentage = count / total * 100)
-
-ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Coffee Roast Level Preferences by Age Group",
-       x = "Roast Level",
-       y = "Percentage") +
-  theme_minimal() +
-  scale_fill_viridis_d(end = 0.8)
-```
-In the future, exploring a logistic regression model may also lead to more accurate results, since the data when visualized doesn't appear to be very linear.
+This leads to the question of whether the younger age range of 18-24 is the most likely age to prefer lighter roast levels (Light, Medium, or Nordic). We investigate this below by using a linear regression model. In the future, exploring a logistic regression model may also lead to more accurate results, since the data is mostly in a few categories, so it might not be very linear.
 ```{r}
 #| label: lin-reg-all-prefs
   young_roast_reg<-  coffee_clean_factors |>
@@ -465,6 +435,8 @@ Given the lack of statistical significance, any observed differences in sweetene
 The calculated t-statistic is 9.796, which is a measure of the difference between the two sample means relative to the variation in the samples. A higher t-value indicates a greater degree of difference. The p-value is less than 2.2e-16, which is essentially zero for practical purposes. This is far below the commonly used significance level of 0.05, indicating strong evidence against the null hypothesis.
 
 We reject the null hypothesis that there is no difference in the average number of cups of coffee consumed per day between males and females. The data provides strong evidence that males, on average, consume more cups of coffee per day than females. The result is statistically significant with a high degree of confidence. We should consider, however, that this dataset contains mostly males, so the mean for females may not be as representative.
+
+Overall, for this data, we can say that there is an association between roast preference and age, and males on average, consume more coffee per day than females. This gives us some specific insights into consumption habits based on these two specific demographic features. This dataset has many interesting relationships to explore that were out of scope for this project, but in the future we would like to be able to generalize our results - so try to eliminate biases - and perform more text analysis to determine people's sentiments about coffee.
 
 # Limitations
 

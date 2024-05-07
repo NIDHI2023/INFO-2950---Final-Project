@@ -162,4 +162,32 @@ coffee_clean_factors |>
 
 ```
 
-# Other appendicies (as necessary)
+# Extra Data Analysis figures
+
+```{r}
+#| label: visual-all-prefs
+#| fig-width: 8
+#| fig-height: 6
+#| 
+#age vs  roast
+#coffee like or not by age
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
+
+age_roast_counts <- coffee_clean_factors |>
+  filter(!is.na(roast_level) & !is.na(age)) |>
+  group_by(age, roast_level) |>
+  summarise(count = n()) |>
+  left_join(roast_totals, by = "roast_level") |>
+  mutate(percentage = count / total * 100)
+
+ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Coffee Roast Level Preferences by Age Group",
+       x = "Roast Level",
+       y = "Percentage") +
+  theme_minimal() +
+  scale_fill_viridis_d(end = 0.8)
+```
+```
