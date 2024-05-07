@@ -35,7 +35,6 @@ Coffee C - Dark roast
 Coffee D - Fermented, Natural, Fruity
 Detailed description on task and methods used to collect the data(https://www.youtube.com/watch?v=1fN_z4-EcOU)
 
-*Loading data*
 
 ```{r}
 #| label: loading packages
@@ -311,12 +310,6 @@ null_dist_roast <- young_roast_binary %>%
   generate(reps = 5000, type = "permute") %>%
   calculate(stat = "Chisq")
 
-# visualize the null distribution and test statistic!
-null_dist_roast %>%
-  visualize() + 
-  shade_p_value(observed_indep_statistic,
-                direction = "greater")
-
 # calculate the p value from the observed statistic and null distribution
 p_value_independence <- null_dist_roast %>%
   get_p_value(obs_stat = observed_indep_statistic,
@@ -326,7 +319,7 @@ p_value_independence
 
 ```
 
-*Hypothesis 2*
+*Pre-registered Hypothesis 2*
 
 To evaluate whether the number of types of sweetener accepted differ between people with different education degrees, we will conduct a two-side hypothesis test
 
@@ -364,12 +357,6 @@ null_dist_sweet <- sweet_edu_df_analysis |>
   generate(reps = 1000, type = "permute") |>
   calculate(stat = "diff in means")
 
-# visualize the null distribution and test statistic
-null_dist_sweet |>
-  visualize() + 
-  shade_p_value(ob_sweet,
-                direction = "greater")
-
 # calculate the p value from the observed statistic and null distribution
 p_value <- null_dist_sweet |>
   get_p_value(obs_stat = ob_sweet,
@@ -379,7 +366,7 @@ p_value
 ```
 
 
-*Research Question 1*
+*Research Question*
 
 *Narrowing to Coffee Consumption by Gender*
 
@@ -440,7 +427,7 @@ Overall, for this data, we can say that there is an association between roast pr
 
 # Limitations
 
-As mentioned in previous sections, the data is likely not representative of the population of the US, and because it was only done in the US, this isolates coffee experiences and preferences common to the US only. The study relied on data from survey respondents who likely follow James Hoffmann and thus have a bias towards an interest in coffee, potentially skewing the results toward those who are more engaged with their dietary choices and creating voluntary or nonresponse bias. Most respondents also tended to be male, white, and middle aged, which is not representative, so this data cannot be generalized to the US population. Additionally, since the data was self-reported, there could be inaccurate values that lead to inaccurate inferences. Our inferences assume that this data is correct and representative if they were to relate to any population beyond this sample.
+As mentioned in previous sections, the data is likely not representative of the population of the US, and because it was only done in the US, this isolates coffee experiences and preferences common to the US only. The study relied on data from survey respondents who likely follow James Hoffmann and thus have a bias towards an interest in coffee, potentially skewing the results toward those who are more engaged with their dietary choices and creating voluntary or nonresponse bias. Most respondents also tended to be male, white, and middle aged, which is not representative, so this data cannot be generalized to the US population. This means we cannot  Additionally, since the data was self-reported, there could be inaccurate values that lead to inaccurate inferences. Our inferences assume that this data is correct and representative if they were to relate to any population beyond this sample. If a coffee company like Cometeer wanted to adjust their coffee based on our concluded trends, they may waste money and time making a new recipe when the actual market doesn't favor that recipe.
 
 # Acknowledgments
 

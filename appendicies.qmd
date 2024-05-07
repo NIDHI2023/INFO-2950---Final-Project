@@ -7,6 +7,7 @@ execute:
 
 # Data cleaning
 ```{r}
+library(tidyverse)
 #| label: loading-cleaned-data
 coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 
@@ -159,6 +160,9 @@ coffee_clean_factors <- coffee_clean_factors |>
 
 coffee_clean_factors |>
   write_rds(file = "data/coffee_clean_factor.rds")
+
+# coffee_remove_unused <- coffee_clean_factors |>
+#   select(age, cups_of_coffee_per_day, add_to_none, add_to_milk, contains("sugar_sweetener_add"))
 
 ```
 
