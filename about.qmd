@@ -2,7 +2,7 @@
 title: "About"
 ---
 
-This project was developed by **\[Brilliant Penguins]** For [INFO 2950: Introduction to Data Science](https://info2950.infosci.cornell.edu) at Cornell University. The team is comprised of the following team members.
+This project was developed by **\[Brilliant Cassowary]** For [INFO 2950: Introduction to Data Science](https://info2950.infosci.cornell.edu) at Cornell University. The team is comprised of the following team members.
 
 -   Team member 1: Stephen Syl-akinwale, 2025, Info Science.
 -   Team member 2: Nidhi Soma, 2027, Computer Science.
