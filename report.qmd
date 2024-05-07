@@ -21,13 +21,13 @@ One of the most frequently bought drinks on campus is coffee. But it is present 
 *ADD SUMMARY OF RESULTS*
 
 # Data description
-Our dataset comes from survey responses that world champion barista James Hoffmann made available to the public after conducting his "Great American Coffee Taste Test". This datset was also partially funded by Cometeer – a subscription service that makes flash-frozen coffee capsules. The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns. This dataset was created to understand the general public's preferences as consumers for coffee. Additionally, since Cometeer funded the creation of this dataset, they may be interested to know people's preferences in order to make their coffee capsules more appealing to a wider market.
+Our dataset comes from survey responses that world champion barista James Hoffmann made available to the public after conducting his "Great American Coffee Taste Test". This datset was also partially funded by Cometeer – a subscription service that makes flash-frozen coffee capsules - who may be interested to know people's preferences in order to make their coffee capsules more appealing to a wider market. The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns. This dataset was created to understand the general public's preferences as consumers for coffee.
 
-The survey quickly was sold out, and Hoffman's audience in general is coffee specialists. That will likely skew the population surveyed to be people who likely prefer specialty coffee, so it may be a biased sample. Additionally, this survey was conducted through people ordering tasting kits online, which were then sent to the participants to prepare and complete voluntarily, so there may have been differences in that. One example is that because participants were following a livestream to demonstrate how to do their taste test, their coffees may have been out long enough to have cooled, which could be another unaccounted variable that affected their taste preferences.
+The survey quickly was sold out, and Hoffman's audience in general is coffee specialists. That will likely skew the population surveyed to be people who likely prefer specialty coffee, so it may be a biased sample. Additionally, this survey was conducted through people ordering tasting kits online, which were then sent to the participants to prepare and complete voluntarily, so there may have been differences in that. Participants needed a weighing scale, a way of heating hot water, and cups that can accommodate about 250 mLs or eight ounces. One example is that because participants were following a livestream to demonstrate how to do their taste test, their coffees may have been out long enough to have cooled, which could be another unaccounted variable that affected their taste preferences.
 
-There was some preprocessing in that zip codes and geographic data have been removed and participants were anonymized to protect their privacy, so it doesn't seem possible to re-identify individuals. The dataset contains information that may be confidential and identifies subpopulations, such as political affiliation, race, age, gender, employment status, number of children, and education level.  It wasn't disclosed how Hoffmann and his team collected all the taste test results that participants filled out, but once they got that data, they made it into a spreadsheet to be shared with the public. People were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. The participants had to order the coffee tasting kit on their own in order to participate, implying their consent to these terms. Participants received an event kit with four different coffees from four different roasters that will be chemically identical if used with distilled water at the same ratio. Participants needed a weighing scale, a way of heating hot water, and cups that can accommodate about 250 mLs or eight ounces. Hoffmann also made his intentions clear in his video with why he wanted to collect the data, and that he was planning to publicize the raw data later on. There are no explicit relationships between individual instances because the data was anonymized, and there are also no recommended data splits in this collection.
+There was some preprocessing in that zip codes and geographic data have been removed and participants were anonymized to protect their privacy, so it doesn't seem possible to re-identify individuals. The dataset contains information that may be confidential and identifies subpopulations, such as political affiliation, race, age, gender, employment status, number of children, and education level.  It wasn't disclosed how Hoffmann and his team collected all the taste test results that participants filled out, but once they got that data, they made it into a spreadsheet to be shared with the public. People were made aware of the data collection by a YouTube video stating that the purpose of this taste test was to understand coffee preferences in the USA. Hoffmann also made his intentions for the survey clear in his video, and that he was planning to publicize the raw data later on. The participants had to order the coffee tasting kit on their own in order to participate, implying their consent to these terms. There are no explicit relationships between individual instances because the data was anonymized, and there are also no recommended data splits in this collection.
 
-Some data cleaning was done to rename the variables and remove columns with little information. The raw data is stored in our repository and can still be accessed through this link publicly ( https://bit.ly/gacttCSV+).
+Some data cleaning was done to rename the variables and remove columns with little information, such as "flavorings" and "Gender (please specify)". The raw data is stored in our repository and can still be accessed through this link publicly ( https://bit.ly/gacttCSV+).
 
 
 *Notes*
@@ -234,9 +234,9 @@ We explored other demographic attributes in below.
 #|fig-width: 5
 #| fig-height: 5
 # Preference by Age
-roast_totals <- coffee_clean_factors |>
-  group_by(roast_level) |>
-  summarise(total = n())
+# roast_totals <- coffee_clean_factors |>
+#   group_by(roast_level) |>
+#   summarise(total = n())
 
 #Preferences by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
 coffee_clean_factors |>
@@ -249,8 +249,8 @@ coffee_clean_factors |>
 coffee_clean_employ<- coffee_clean_factors|>
   mutate(employment_status = if_else(is.na(employment_status), "No disclosure", employment_status)) |>
   filter(!is.na(cups_of_coffee_per_day))
-ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, y = employment_status)) +
-  geom_count() +
+ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, fill = employment_status)) +
+  geom_bar() +
   labs(title = "Correlation between Coffees per Day and Employment Status",
        x = "Cups of Coffee per Day",
        y = "Employment Status")
@@ -268,7 +268,7 @@ In our analysis we can infer several things according to different variables and
 
 Cups of Coffee per day by Gender: The visuals suggests that people that identify as males are the highest counts of coffee drinkers per day. In all counts they drink less than 1 and more than 4.
 
-Cups of Coffee per day by employment: From this we can infer that Employed fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. On the opposite side homemakers are recorded to have the least counts of coffee cups.
+Cups of Coffee per day by employment: Employed fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. On the opposite side homemakers are recorded to have the least counts of coffee cups.
 
 ```{r}
 # Caffeine preference per education level: In this visual we can see that the individuals with bachelors degrees that have full caffeine in their coffee are the most common entry. But they are also the most common entry in terms of decaf. A more insightful observation suggests that educational levels are not a pure indicator of the levels of caffeination in participants coffees.
