@@ -1,5 +1,5 @@
 ---
-title: "Project title"
+title: "Coffee Preferences"
 subtitle: "Appendix to report"
 execute:
   echo: true
