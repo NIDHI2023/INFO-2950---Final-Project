@@ -194,4 +194,43 @@ ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
   theme_minimal() +
   scale_fill_viridis_d(end = 0.8)
 ```
+
+```{r}
+#| label: extra sweetener graphs
+#Popularity of sweeteners
+sweet_edu_df2 |>
+  ggplot(aes(y = sweetener, fill = add) ) +
+  geom_bar()
+
+#number of added sweeteners by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = education_level), fill = "blue") +
+  geom_bar() +
+  labs(
+    title = "Number of added sweeteners by education level",
+    x = "Count",
+    y = "Education level"
+  )
+```
+These graphs show the distributions for each variable, so we can get an idea of the different groups we are working with. We see that granulated_sugar is the most popular sweetener, and people with higher than a Bachelor's degree are more common in this sample, which could potentially skew results. Next, we see how these two variables are related to each other through proportions, where we can more directly compare the visual differences.
+
+```{r}
+# #sweetener preference proportions by education level
+# sweet_edu_df2 |>
+#   ggplot(aes(y = sweetener, fill = add) ) +
+#   geom_bar(position = "fill") +
+#   facet_wrap(.~education_level)
+
+#proportion preferring sweetener by education level
+sweet_edu_df2 |>
+  ggplot(aes(y = education_level, fill = add) ) +
+  geom_bar(position = "fill") +
+  facet_wrap(.~sweetener) +
+  labs(
+    title = "Proportion of people who add sweetener",
+    subtitle= "By type of sweetener and education level",
+    x = "Proportion",
+    y= "Education level"
+  )
+
 ```

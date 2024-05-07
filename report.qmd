@@ -63,6 +63,8 @@ We will look into several factors such as age, gender, education level, race, an
 Our first pre-registered hypothesis was that younger people 18 - 25 prefer their coffee with lighter roasts.
 ```{r}
 #| label: visual-hyp-prefs
+#| fig-width: 8
+#| fig-height: 3
 # test <- coffee_clean_factors |>
 #   select(age, favorite_coffee_drink, favorite_coffee, best_described_before, like_coffee, roast_level, prefer_between_abc, prefer_between_ad, favorite_overall_coffee)
 
@@ -140,43 +142,9 @@ sweet_edu_df3 <- sweet_edu_df2 |>
   filter(add == TRUE)
 
 sweet_edu_df <- sweet_edu_df
-  
-#Popularity of sweeteners
-sweet_edu_df2 |>
-  ggplot(aes(y = sweetener, fill = add) ) +
-  geom_bar()
-
-#number of added sweeteners by education level
-sweet_edu_df2 |>
-  ggplot(aes(y = education_level), fill = "blue") +
-  geom_bar() +
-  labs(
-    title = "Number of added sweeteners by education level",
-    x = "Count",
-    y = "Education level"
-  )
 ```
-These graphs show the distributions for each variable, so we can get an idea of the different groups we are working with. We see that granulated_sugar is the most popular sweetener, and people with higher than a Bachelor's degree are more common in this sample, which could potentially skew results. Next, we see how these two variables are related to each other through proportions, where we can more directly compare the visual differences.
 
 ```{r}
-
-# #sweetener preference proportions by education level
-# sweet_edu_df2 |>
-#   ggplot(aes(y = sweetener, fill = add) ) +
-#   geom_bar(position = "fill") +
-#   facet_wrap(.~education_level)
-
-#proportion preferring sweetener by education level
-sweet_edu_df2 |>
-  ggplot(aes(y = education_level, fill = add) ) +
-  geom_bar(position = "fill") +
-  facet_wrap(.~sweetener) +
-  labs(
-    title = "Proportion of people who add sweetener",
-    subtitle= "By type of sweetener and education level",
-    x = "Proportion",
-    y= "Education level"
-  )
 
 #number of sugar type by education
 sweet_edu_df_analysis |>
@@ -193,7 +161,7 @@ sweet_edu_df_analysis |>
 
 
 ```
-The visualizations for the proportions seem to show little difference between the distribution of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. Instead of looking at the types of sweeteners, we can look at the number of sweeteners that a person uses. Seeing the number of sweeteners a person adds gives an indication to their tolerance/preference for sweetness in their coffee. We can answer the question of how many sweeteners someone uses corresponding to education level through the logistic regression below.
+The visualizations for the proportions showed little difference between the distribution of sugar types preferred by those with a Bachelor's or higher degree compared to that preferred by those with less than  Bachelor's degree. Instead of looking at the types of sweeteners, we can look at the number of sweeteners that a person uses. Seeing the number of sweeteners a person adds gives an indication to their tolerance/preference for sweetness in their coffee. We can answer the question of how many sweeteners someone uses corresponding to education level through the logistic regression below.
 
 ```{r}
 #| label: log-reg
@@ -201,20 +169,10 @@ edu_sweetener_fit1 <- logistic_reg() |>
   fit(education_level ~ sweet_count, data = sweet_edu_df_analysis)
 tidy(edu_sweetener_fit1)
 
-
-# edu_sweetener_fit2 <- logistic_reg() |>
-#   fit(education_level ~ granulated_sugar, data = sweet_edu_df)
-# tidy(edu_sweetener_fit)
-
 ```
 From the results of the logistical regression model, the negative coefficient for sweet_count reflects a lower probability for people with less than a Bachelor's degree choosing more sugar additive types than a person with a Bachelor's degree or higher would. 
 
-
-```{r}
-# We now address our first question on actual self-perceived coffee experience compared to stated preferences. We use examples of people stating their preferences and look at the difference in data where they have a taste test.
-```
-
-We explored other demographic attributes in below.
+We explored other demographic attributes below.
 
 ```{r}
 #|fig-width: 5
