@@ -223,7 +223,14 @@ other_level = "Darker"))
   ggplot(young_roast_binary, mapping = aes(x = age, fill = roast_level_binary)) +
   geom_bar(position = "fill") +
     scale_fill_viridis_d() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+    labs(
+      title= "Proportion prefrence by Roast variety",
+      x= "Age Groups",
+      y= "Proportion",
+      
+      fill= "Roast Prefrences"
+    )
 ```
 
 If there were no relationship between these two variables, we would expect to see the purple bars reaching to the same height, regardless of age group. We need to conduct a chi-squared test of independence to see if the differences we see here are just random noise or a meaningful relationship.
