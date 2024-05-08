@@ -1,13 +1,34 @@
 ---
 title: "Coffee Preferences"
-subtitle: "Appendix to report"
+subtitle: "Brilliant Cassowary - Appendix to report"
+author:
+  - "Nidhi Soma (ns848)"
+  - "Joice Chen (jc3528)"
+  - "Jinpeng Li (jl3496)"
+  - "Stephen Syl-Akinwale (sis33)"
 execute:
   echo: true
 ---
 
 # Data cleaning
+
+Please have tidyverse, tidymodels, usethis, and probably installed for our packages and libraries to work.
+
 ```{r}
+#| label: loading packages
 library(tidyverse)
+library(tidyverse)
+library(janitor)
+library(dplyr)
+library(skimr)
+library(stringr)
+library(ggplot2)
+library(usethis)
+library(tidymodels)
+library(probably)
+```
+
+```{r}
 #| label: loading-cleaned-data
 coffee_df<-read_csv("data/GACTT_RESULTS_ANONYMIZED_v2.csv")
 
@@ -193,10 +214,57 @@ ggplot(age_roast_counts, aes(x = roast_level, y = percentage, fill = age)) +
        y = "Percentage") +
   theme_minimal() +
   scale_fill_viridis_d(end = 0.8)
+
+# #Preferences by education level
+coffee_clean_factors |>
+  select(caffeine, education_level) |>
+  drop_na() |>
+  ggplot(aes(x = caffeine, fill = education_level)) +
+  geom_bar() +
+  labs(title = "Amount of caffeine in coffee by education level")
+
+# Preference by Age
+roast_totals <- coffee_clean_factors |>
+  group_by(roast_level) |>
+  summarise(total = n())
 ```
 
 ```{r}
 #| label: extra sweetener graphs
+
+#clean original dataset
+sweet_edu_df <- coffee_clean_factors |>
+  select(education_level, contains("sugar_sweetener_add")) |>
+  drop_na()
+names(sweet_edu_df) <- gsub("sugar_sweetener_add_", "", names(sweet_edu_df))
+sweet_edu_df <- sweet_edu_df |> 
+  mutate(education_level = case_when(
+    education_level %in% c("Bachelor's degree", "Master's degree", "Doctorate or professional degree") ~ "bachelor",
+    TRUE ~ "no_bachelor"
+  )) |>
+  mutate(education_level = factor(education_level,
+                                  c("bachelor",
+                                    "no_bachelor")))
+
+#data set for analysis, with number of sugar types
+sweet_edu_df_analysis <- sweet_edu_df |>
+  rowwise() |>
+  mutate(sweet_count = sum(across(granulated_sugar:raw_sugar), na.rm = TRUE))
+
+#other dataset for visualization purposes
+sweet_edu_df2 <- sweet_edu_df |>
+  pivot_longer(
+    cols = 2:9,
+    names_to = "sweetener",
+    values_to = "add"
+  ) 
+
+sweet_edu_df3 <- sweet_edu_df2 |>
+  select(education_level, sweetener, add)|>
+  filter(add == TRUE)
+
+sweet_edu_df <- sweet_edu_df
+
 #Popularity of sweeteners
 sweet_edu_df2 |>
   ggplot(aes(y = sweetener, fill = add) ) +

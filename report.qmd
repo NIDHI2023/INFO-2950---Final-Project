@@ -15,7 +15,9 @@ fig-height: 3
 
 
 # Introduction
-One of the most frequently bought drinks on campus is coffee. But it is present in many more settings, ranging from casual coffee shop frequenters and critical coffee enthusiasts. Our question was how does coffee preference differ by demographic attributes such as age, gender, education level, race, and political identity? To examine this question in a narrower scope, we looked at certain consumption habits based on age, gender, and education level. We found that there is an association between roast preference and age, and males on average, consume more coffee per day than females, and we were not able to make conclusions about how education level affects the amount of sweetness preferred.
+As our group was sitting in a cafe, deciding on what to research, we noticed that one of the most frequently bought drinks on campus is coffee. But it is present in many more settings, ranging from casual coffee shop frequenters and critical coffee enthusiasts. We looked through many sources that collect data, and found one dataset from Data is Plural courtesy of James Hoffmann that seemed promising. The source had links to Hoffmann's own video about the dataset, and we found that he seemed to be a creditable source, so we were fairly confident about trusting the data that he collected. 
+
+Our question was how does coffee preference differ by demographic attributes such as age, gender, education level, race, and political identity? To examine this question in a narrower scope, we looked at certain consumption habits based on age, gender, and education level. We found that there is an association between roast preference and age, and males on average consume more coffee per day than females. We were not able to make conclusions about how education level affects the amount of sweetness preferred. With these results, we now have some information about the consumers, which can allow for tailored marketing strategies.
 
 # Data description
 Our dataset comes from survey responses that world champion barista James Hoffmann made available to the public after conducting his "Great American Coffee Taste Test". This datset was also partially funded by Cometeer – a subscription service that makes flash-frozen coffee capsules - who may be interested to know people's preferences in order to make their coffee capsules more appealing to a wider market. The observations represent an individual respondent to the survey. There are 4,042 rows. The columns are questions that they answered, ranging from demographic data to coffee preferences. There are 98 of these columns. This dataset was created to understand the general public's preferences as consumers for coffee.
@@ -26,14 +28,9 @@ There was some preprocessing in that zip codes and geographic data have been rem
 
 Some data cleaning was done to rename the variables and remove columns with little information, such as "flavorings" and "Gender (please specify)". The raw data is stored in our repository and can still be accessed through this link publicly ( https://bit.ly/gacttCSV+).
 
+Detailed description on task and methods used to collect the data:
 
-*Notes*
-
-Coffee A - Light roast, Washed
-Coffee B - Medium Roast
-Coffee C - Dark roast
-Coffee D - Fermented, Natural, Fruity
-Detailed description on task and methods used to collect the data(https://www.youtube.com/watch?v=1fN_z4-EcOU)
+(https://www.youtube.com/watch?v=1fN_z4-EcOU)
 
 
 ```{r}
@@ -177,10 +174,6 @@ We explored other demographic attributes below.
 ```{r}
 #|fig-width: 5
 #| fig-height: 5
-# Preference by Age
-# roast_totals <- coffee_clean_factors |>
-#   group_by(roast_level) |>
-#   summarise(total = n())
 
 #Preferences by gender (may need to standardize by frequencies of gender cause what if more males than females etc.)
 coffee_clean_factors |>
@@ -204,14 +197,6 @@ ggplot(coffee_clean_employ, aes(x = cups_of_coffee_per_day, fill = employment_st
        x = "Cups of Coffee per Day",
        y= "Count",
        fill = "Employment Status")
-
-# #Preferences by education level
-# coffee_clean_factors |>
-#   select(caffeine, education_level) |>
-#   drop_na() |>
-#   ggplot(aes(x = caffeine, fill = education_level)) +
-#   geom_bar() +
-#   labs(title = "Amount of caffeine in coffee by education level")
 ```
 
 In our analysis we can infer several things according to different variables and fields of participants.
@@ -219,10 +204,6 @@ In our analysis we can infer several things according to different variables and
 Cups of Coffee per day by Gender: The visuals suggests that people that identify as males are the highest counts of coffee drinkers per day. In all counts they drink less than 1 and more than 4.
 
 Cups of Coffee per day by employment: Employed fulltime individuals are the most frequent coffee drinkers, with at least 2 cups per day for 900 counts of employed individuals. On the opposite side homemakers are recorded to have the least counts of coffee cups.
-
-```{r}
-# Caffeine preference per education level: In this visual we can see that the individuals with bachelors degrees that have full caffeine in their coffee are the most common entry. But they are also the most common entry in terms of decaf. A more insightful observation suggests that educational levels are not a pure indicator of the levels of caffeination in participants coffees.
-```
 
 # Evaluation of significance
 
@@ -232,6 +213,8 @@ We can investigate if the difference in proportions of preferring a lighter roas
 
 ```{r}
 #| label: show-independence-relationship
+#| fig-width: 8
+#| fig-height: 3
 young_roast_binary <-young_roast_reg |>
   mutate(roast_level_binary = fct_collapse(
 .f = roast_level,
@@ -276,6 +259,7 @@ p_value_independence <- null_dist_roast %>%
 p_value_independence
 
 ```
+We can reject the null hypothesis in favor of the alternative because our p-value of approximately 0 is less than the alpha value of 0.05. 
 
 *Pre-registered Hypothesis 2*
 
@@ -323,6 +307,7 @@ p_value <- null_dist_sweet |>
 p_value
 ```
 
+With a p-value of 0.35, which is larger than the critical value of 0.05, we do not have sufficient evidence to reject the null hypothesis. 
 
 *Research Question*
 
@@ -359,13 +344,13 @@ t_test_results <- t.test(male_coffee, female_coffee)
 
 print(t_test_results)
 ```
-
+The p-value is less than 2.2e-16, which is essentially zero for practical purposes. We have strong evidence against the null hypothesis.
 
 # Interpretation and conclusions
 
 *Hypothesis 1*
 
-According to the evaluation of significance, we can reject the null hypothesis because our p-value of approximately 0 is less than the alpha value of 0.05. Thus, there is sufficient evidence that age group and preferring lighter roasts of coffee are not independent of each other. A possible explanation for this phenomenon is that certain age groups are more prone to enjoying a certain taste, while others prefer the caffeine. In the future, we could analyze the the columns specifying people's reason for enjoying coffee versus their age group to explore this hypothesis.
+According to the evaluation of significance, we reject the null hypothesis because our p-value of approximately 0 is less than the alpha value of 0.05. Thus, there is sufficient evidence that age group and preferring lighter roasts of coffee are not independent of each other. A possible explanation for this phenomenon is that certain age groups are more prone to enjoying a certain taste, while others prefer the caffeine. In the future, we could analyze the the columns specifying people's reason for enjoying coffee versus their age group to explore this hypothesis.
 
 In the data analysis, a possible explanation for younger people showing more of a preference for Dark roasts than Nordic roasts, despite showing an overwhelming preference for Light and Medium roasts, is that more people may be unfamiliar with what a Nordic roast is. For people with general coffee knowledge, seeing light, medium, and dark roasts tends to be more common than Nordic; however, we should still consider that this sample likely has many respondents that are knowledgeable about coffee. So, these results still may have another underlying cause.
 
@@ -385,8 +370,12 @@ Overall, for this data, we can say that there is an association between roast pr
 
 # Limitations
 
-As mentioned in previous sections, the data is likely not representative of the population of the US, and because it was only done in the US, this isolates coffee experiences and preferences common to the US only. The study relied on data from survey respondents who likely follow James Hoffmann and thus have a bias towards an interest in coffee, potentially skewing the results toward those who are more engaged with their dietary choices and creating voluntary or nonresponse bias. Most respondents also tended to be male, white, and middle aged, which is not representative, so this data cannot be generalized to the US population. This means we cannot  Additionally, since the data was self-reported, there could be inaccurate values that lead to inaccurate inferences. Our inferences assume that this data is correct and representative if they were to relate to any population beyond this sample. If a coffee company like Cometeer wanted to adjust their coffee based on our concluded trends, they may waste money and time making a new recipe when the actual market doesn't favor that recipe.
+As mentioned in previous sections, a big limitation of the data is that it's likely not representative of the population of the US, and because it was only done in the US, this isolates coffee experiences and preferences common to the US only. The study relied on data from survey respondents who likely follow James Hoffmann and thus have a bias towards an interest in coffee, potentially skewing the results toward those who are more engaged with their dietary choices and creating voluntary or nonresponse bias. This means people who don't like coffee won't have as much as an input, so coffee taste going forward may not be tailored to them, making them dislike it even more. Most respondents also tended to be male, white, and middle aged, which is not representative, so this data cannot be generalized to the US population, let alone any consumer outside the US. Additionally, since the data was self-reported, there could be inaccurate values that lead to inaccurate inferences. Our inferences assume that this data is correct and representative if they were to relate to any population beyond this sample. If a coffee company like Cometeer wanted to adjust their coffee based on our concluded trends, they may waste money and time making a new recipe when the actual market doesn't favor that recipe.
 
 # Acknowledgments
 
 We thank all participants and James Hoffmann for their contributions to this study and acknowledge the efforts of our research team in collecting and analyzing the data. Their hard work has been instrumental in enhancing our understanding of consumer behavior related to coffee consumption. We also thank our project mentor, Breanna Green, for her feedback and suggestions throughout multiple phases of this project.
+
+Source of data: 
+
+https://docs.google.com/spreadsheets/d/1wZhPLMCHKJvwOkP4juclhjFgqIY8fQFMemwKL2c64vk/edit#gid=0
