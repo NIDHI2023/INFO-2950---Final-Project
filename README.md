@@ -1,6 +1,6 @@
 # team-project
 
-Project repo for INFO 2950 (Spring 2024).
+Project repo for INFO 2950 (Spring 2024). Go to docs/report.pdf for the final report.
 
 Authors:
 - Nidhi Soma (ns848)
